@@ -119,7 +119,7 @@ const homeModel = {
   },
 
   async getAllData() {
-    return await prisma.Homepage.findMany();
+    return await prisma.Homepage.findFirst();
   },
   async getBackgroundimages() {
     return await prisma.BackgroundImage.findMany();

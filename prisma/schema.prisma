@@ -11,22 +11,78 @@ datasource db {
   
 }
 
-
 model User {
-  id          Int       @id @default(autoincrement())
-  uid         String    @unique
-  username        String? 
-  isUser      Boolean?  @default(true)
-  email       String   @unique  // Adding @unique to ensure uniqueness
-  address     String?
-  age         Int?
-  dob         DateTime?
-  profileImage String?
-  // Define a one-to-many relationship to the Order model
-  orders      Order[]   @relation("UserToOrder")
+  id              Int             @id @default(autoincrement())
+  uid             String          @unique
+  username        String?
+  isUser          Boolean         @default(true)
+  email           String          @unique
+  address         String?
+  age             Int?
+  dob             DateTime?
+  orders          Order[]         @relation("UserToOrder")
+  carts           Cart[]
+  bookingResults  BookingResult[]
+  
 }
 
+model BookingDetail {
+  id               Int             @id @default(autoincrement())
+  status           String
+  bookingId        Int
+  downloadRequired Boolean
+  serviceUniqueId  String
+  serviceType      String
+  confirmationNo   String?
+  bookingResult    BookingResult   @relation(fields: [bookingResultId], references: [referenceNo])
+  bookingResultId  String
+}
 
+model BookingResult {
+  referenceNo     String          @id
+  userId          String
+  user            User            @relation(fields: [userId], references: [uid])
+  bookingDetails  BookingDetail[]
+}
+
+  //user             User            @relation("UserToBookingDetail", fields: [userId], references: [id])
+// Cart model
+model Cart {
+  id          Int             @id @default(autoincrement()) 
+  totalamount Float?
+  uniqueNo    Int?
+  userId      String        @unique
+  TourDetails CartTourDetail[]
+  user        User            @relation(fields: [userId], references: [uid]) // Reference uid instead of id
+}
+
+model CartTourDetail {
+  id            Int     @id @default(autoincrement()) 
+  serviceUniqueId Int?
+  tourname      String
+  tourOption    String
+  tourId        Int
+  optionId      Int
+  adult         Int
+  child         Int
+  infant        Int
+  tourDate      String
+  timeSlotId    Int
+  startTime     String
+  transferId    Int
+  pickup       String?
+  adultRate     Float
+  childRate    Float
+  serviceTotal  Float
+
+  // Relation to Cart
+  cart          Cart    @relation(fields: [cartId], references: [id])
+  cartId        Int 
+}
+enum CartStatus {
+  ACTIVE
+  DISABLED
+}
 model Order {
   id       Int      @id @default(autoincrement())
   username     String
@@ -37,10 +93,7 @@ model Order {
   amount   Float
   status String @default("Approved")
   date DateTime 
-  
-  // Define a many-to-one relationship to the User model
   user     User     @relation("UserToOrder", fields: [tourId], references: [id])
-  // Change the fields and references to connect by `tourId`
 }
 
 model TimeSlot {
@@ -123,20 +176,20 @@ model Tourstaticdatabyid {
   imageCaptionName            String
   cityTourTypeId              String
   cityTourType                String
-  tourDescription             String
-  tourInclusion               String
-  tourShortDescription        String
-  raynaToursAdvantage         String
-  whatsInThisTour             String
-  importantInformation        String
-  itenararyDescription        String
-  usefulInformation           String
-  faqDetails                  String
-  termsAndConditions          String
-  cancellationPolicyName      String
-  cancellationPolicyDescription String
-  childCancellationPolicyName  String
-  childCancellationPolicyDescription String
+  tourDescription             String @db.LongText
+  tourInclusion               String @db.LongText
+  tourShortDescription        String @db.LongText
+  raynaToursAdvantage         String @db.LongText
+  whatsInThisTour             String @db.LongText
+  importantInformation        String @db.LongText
+  itenararyDescription        String @db.LongText
+  usefulInformation           String @db.LongText
+  faqDetails                  String @db.LongText
+  termsAndConditions          String @db.LongText
+  cancellationPolicyName      String @db.LongText
+  cancellationPolicyDescription String @db.LongText
+  childCancellationPolicyName  String @db.LongText
+  childCancellationPolicyDescription String @db.LongText
   childAge                    String
   infantAge                   String
   infantCount                 Int
@@ -151,6 +204,7 @@ model Tourstaticdatabyid {
   googleMapUrl                String?
   tourExclusion               String?
   howToRedeem                 String?
+  cutOffhrs                   Int?
   tourstaticdata               Tourstaticdata     @relation(fields: [TourId], references: [tourId]) // Define the relationship
   tourImages                  TourImagess[] // Define relationship with TourImage
   tourReviews                 TourReview[]  // Define relationship with TourReview
@@ -189,7 +243,9 @@ model TourPricing {
   amount      Float           // Tour amount
   discount    Float           // Discount for the tour
   sortOrder   Int?            // Sorting order (optional)
-  addPrice    Float?          // Additional price (optional)
+  addPriceadult   Float?    
+  addPricechild   Float?      
+  addPriceinfant   Float?   // Additional price (optional)
   tour        Tourstaticdata  @relation(fields: [tourId], references: [tourId])
 }
 
@@ -215,9 +271,6 @@ model TourOptionstaticdata {
   tour                        Tourstaticdata         @relation(fields: [tourId], references: [tourId])
 
 }
-
-
-
 
 
 model TourOption {
