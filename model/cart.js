@@ -70,7 +70,64 @@ const Cartmodel = {
 
   },
 
+//   async updateCartTourDetail(requestBody) {
+//     try {
+//         let isUniqueId = false;
+//         let randomid;
 
+//         // Keep generating a new randomid until a unique one is found
+//         while (!isUniqueId) {
+//           randomid = Math.floor(100000 + Math.random() * 900000);
+      
+//           // Check if randomid is not present in CartTourDetail
+//           const existingRecord = await prisma.cartTourDetail.findUnique({
+//               where: {
+//                   id: randomid, // Add this line to specify the id field in the where clause
+//                   serviceUniqueId: randomid,
+//               },
+//           });
+      
+//           if (!existingRecord) {
+//               isUniqueId = true;
+//           }
+//       }
+
+//         // Create the updated data with the provided and generated values
+//         const updatedData = {
+//             serviceUniqueId: randomid,
+//             tourname: requestBody.tourname,
+//             tourOption: requestBody.tourOption,
+//             tourId: requestBody.tourId,
+//             optionId: requestBody.optionId,
+//             adult: requestBody.adult,
+//             child: requestBody.child,
+//             infant: requestBody.infant,
+//             tourDate: requestBody.tourDate,
+//             timeSlotId: requestBody.timeSlotId,
+//             startTime: requestBody.startTime,
+//             transferId: requestBody.transferId,
+//             pickup: requestBody.pickup,
+//             adultRate: requestBody.adultRate,
+//             childRate: requestBody.childRate,
+//             serviceTotal: requestBody.serviceTotal,
+//             cartId: requestBody.cartId,
+//         };
+        
+
+//         // Create a new CartTourDetail with the updated data
+//         const createdCartTourDetail = await prisma.cartTourDetail.create({
+//             data: updatedData,
+//         });
+
+//         console.log('CartTourDetail created:', createdCartTourDetail);
+//         return createdCartTourDetail;
+//     } catch (error) {
+//         console.error('Error creating CartTourDetail:', error);
+//         throw error;
+//     }
+
+
+// }
 
 async  updateCartTourDetail(requestBody) {
   try {

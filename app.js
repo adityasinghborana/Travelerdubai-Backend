@@ -4,8 +4,7 @@ const app = express();
 const routes = require('./routes');
 
 app.use(cors({
-  origin: 'http://69.48.163.45',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: '*',
 }));
 app.use(express.json());
 app.use('/', routes);

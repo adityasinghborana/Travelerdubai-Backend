@@ -15,7 +15,7 @@ const aboutModel = {
     subheading2,
     detail2,
   }) {
-    const updatedAboutpage = await prisma.Aboutus.update({
+    const updatedHomepage = await prisma.Aboutus.update({
       where: { id: "1" }, // Specify the ID of the entity to update
       data: {
         title,
@@ -31,7 +31,7 @@ const aboutModel = {
         // ... Include other fields you want to update
       },
     });
-    return { message: "Aboutus updated successfully", updatedAboutpage };
+    return { message: "Homepage updated successfully", updatedHomepage };
   },
   async getAllData() {
     return await prisma.Aboutus.findFirst();

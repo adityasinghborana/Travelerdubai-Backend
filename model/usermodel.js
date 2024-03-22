@@ -54,7 +54,7 @@ const userModel = {
   },
 
   async checkUser(uid) {
-    return await prisma.User.findFirst({
+    return await prisma.User.findMany({
       where: {
         uid,
       },

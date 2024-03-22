@@ -29,16 +29,17 @@ const Touroption = {
       });
 
       // Extract specific fields directly from the Prisma model
-      // const extractedData = {
-      //   addPriceAdult: prismaData.addPriceadult * adult,
-      //   addPriceChildren: prismaData.addPricechild * children,
-      //   additionalPriceInfant: prismaData.addPriceinfant * infant,
-      // };
-      const extractedData = {
+     // const extractedData = {
+       // addPriceAdult: prismaData.addPriceadult * adult,
+        //addPriceChildren: prismaData.addPricechild * children,
+        //additionalPriceInfant: prismaData.addPriceinfant * infant,
+      //};//
+	     const extractedData = {
         addPriceAdult: (prismaData?.addPriceadult ?? 0) * adult,
         addPriceChildren: (prismaData?.addPricechild ?? 0) * children,
         additionalPriceInfant: (prismaData?.addPriceinfant ?? 0) * infant,
     };
+    
 
       return {
         extractedData: extractedData,
