@@ -130,7 +130,8 @@ model Tourstaticdata {
   id                    Int       @id @default(autoincrement())
   tourId                Int       @unique 
   isvisible             Boolean @default(true)
-  isvisibleHome         Boolean @default(false)
+  isvisiblePopularTours         Boolean @default(false)
+  isvisibleReccomendedTours         Boolean @default(false)
   countryId             Int
   countryName           String
   cityId                Int
@@ -432,30 +433,17 @@ model Coupon {
 
 model Homepage {
   id                  Int               @id @default(autoincrement())
-  counter1            Int
-  counter2            Int
-  counter3            Int
-  counter4            Int
-   detail  String  @db.LongText
-  detail1             String?
-  detail2             String?
+  detail  String  @db.LongText
   gridsectionheading  String
   gridsectionsubheading String
   heading1            String
   heading2            String
   heading3            String
-  heading4            String
   imagepath           String?
   imagepath2          String?
   imagepath3          String?
-  label1              String
-  label2              String
-  label3              String
-  label4              String
-  subheading1         String?
-  subheading2         String?
-  subtitle            String
-  title               String
+  subtitle            String @db.LongText
+  title               String 
 
 }
 
@@ -464,14 +452,6 @@ model BackgroundImage {
   imageUrl              String            // Adjusted field name
  
 }
-
-model GridSectionCard {
-  id                    Int               @id @default(autoincrement())
-  icon                  String
-  iconColor             String
-  subheading            String
-}
-
 
 model Aboutus {
   id          Int      @id @default(autoincrement())
