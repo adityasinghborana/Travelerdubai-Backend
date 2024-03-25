@@ -242,7 +242,7 @@ model TourPricing {
   tourId      Int            @unique
   contractId  Int             // ContractId used to identify if the tour is a supplier tour
   amount      Float           // Tour amount
-  discount    Float           // Discount for the tour
+  discount    Float ?          // Discount for the tour
   sortOrder   Int?            // Sorting order (optional)
   addPriceadult   Float?    
   addPricechild   Float?      

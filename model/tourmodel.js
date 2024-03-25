@@ -19,6 +19,7 @@ const tourmodel = {
     return await prisma.tourstaticdata.findMany({
       include: {
         tourdetails: true,
+        tourpricing: true,
       },
     });
   },
