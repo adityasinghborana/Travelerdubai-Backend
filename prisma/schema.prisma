@@ -43,9 +43,10 @@ model BookingResult {
   userId          String
   user            User            @relation(fields: [userId], references: [uid])
   bookingDetails  BookingDetail[]
+  role            Roles?          @relation(fields: [roleId], references: [id])
+  roleId          Int?
 }
 
-  //user             User            @relation("UserToBookingDetail", fields: [userId], references: [id])
 // Cart model
 model Cart {
   id          Int             @id @default(autoincrement()) 
@@ -449,7 +450,8 @@ model Homepage {
 
 model BackgroundImage {
   id                    Int               @id @default(autoincrement())
-  imageUrl              String            // Adjusted field name
+  filename  String         // Adjusted field name
+  url       String
  
 }
 
@@ -489,3 +491,25 @@ model Eventdata {
   city                   City     @relation(fields: [cityId], references: [CityId]) // Define the relationship
 }
 
+
+model Roles {
+  id              Int             @id @default(autoincrement())
+  uid             String          @unique
+  username        String
+  isAdmin          Boolean         @default(true) 
+  isVendor          Boolean         @default(true)
+  email           String        @unique
+  address         String
+  age             Int
+  bookingResults  BookingResult[]
+  name                 String
+  license_number       String
+  country              String
+  city                 String
+  services_description String
+  mobile               String
+  document_tradelicense  String
+  document_other       String
+  created_at           DateTime @default(now())
+  
+}
