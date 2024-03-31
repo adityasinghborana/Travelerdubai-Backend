@@ -15,7 +15,8 @@ const Bookingcontroller = require("../controller/bookingcontroller");
 const paymentController = require("../controller/stripecontroller");
 const imageController = require("../controller/imagecontroller");
 const uploadMiddleware = require("../middlewares/multerMiddleware");
-
+const getSliderImages = require("../controller/backgroundimage");
+const apiKeyConroller = require("../controller/apicontroller");
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
 router.post("/createusers", userController.createUser); //for admin and user
@@ -69,6 +70,13 @@ router.post(
   "/create-payment-intent",
   paymentController.handleCreatePaymentIntent
 ); // for user and admin
+
+// image uploads
 router.post("/upload", uploadMiddleware, imageController.uploadImage);
+router.get("/sliderimages", getSliderImages.getSliderImages);
+
+//apikey
+router.get("/apikey", apiKeyConroller.getRayanaApi);
+router.put("/updateapikey", apiKeyConroller.UpdateRayanaApi);
 
 module.exports = router;

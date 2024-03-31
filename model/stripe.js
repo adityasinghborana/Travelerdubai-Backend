@@ -1,4 +1,3 @@
-
 // const stripe = require('stripe')('sk_test_51MWclzAtjY5SrUmvw5yjKXWGqtX8X49DfAFmURNdF57xg8Kr4TYbEgC7DiCYyrlfvd6nfQ55mgtj5ksjRcMRGEpd003cPRNQUH'); // Replace with your actual Stripe secret key
 
 // async function createPaymentIntent(amount, currency) {
@@ -8,7 +7,6 @@
 //       currency: currency,
 //     });
 
-   
 //     return paymentIntent.client_secret;
 //   } catch (error) {
 //     console.error(error);
@@ -20,8 +18,10 @@
 //   createPaymentIntent,
 // };
 
-const stripe = require('stripe')('sk_test_51MWclzAtjY5SrUmvw5yjKXWGqtX8X49DfAFmURNdF57xg8Kr4TYbEgC7DiCYyrlfvd6nfQ55mgtj5ksjRcMRGEpd003cPRNQUH');
-const { PrismaClient } = require('@prisma/client');
+const stripe = require("stripe")(
+  "sk_test_51MWclzAtjY5SrUmvw5yjKXWGqtX8X49DfAFmURNdF57xg8Kr4TYbEgC7DiCYyrlfvd6nfQ55mgtj5ksjRcMRGEpd003cPRNQUH"
+);
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function getCartAmountForUser(userId) {
@@ -36,22 +36,22 @@ async function getCartAmountForUser(userId) {
       console.log(userCart.totalamount);
       return userCart.totalamount; // Adjust this based on your actual model structure
     } else {
-      throw new Error('User cart not found');
+      throw new Error("User cart not found");
     }
   } catch (error) {
     console.error(error);
-    throw new Error('Error retrieving cart amount for user');
+    throw new Error("Error retrieving cart amount for user");
   }
 }
 
-async function createPaymentIntent(userId ) {
+async function createPaymentIntent(userId) {
   try {
     const amount = await getCartAmountForUser(userId);
 
     // Ensure that amount is a valid number
     const numericAmount = parseFloat(amount);
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      throw new Error('Invalid amount');
+      throw new Error("Invalid amount");
     }
 
     // Create payment intent
@@ -63,7 +63,7 @@ async function createPaymentIntent(userId ) {
     return paymentIntent.client_secret;
   } catch (error) {
     console.error(error.message);
-    throw new Error('Error creating PaymentIntent');
+    throw new Error("Error creating PaymentIntent");
   }
 }
 
