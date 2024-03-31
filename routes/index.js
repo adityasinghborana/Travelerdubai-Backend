@@ -69,7 +69,7 @@ router.post("/bookings", Bookingcontroller.book);
 router.post(
   "/create-payment-intent",
   paymentController.handleCreatePaymentIntent
-); // for user and admin
+);
 
 // image uploads
 router.post("/upload", uploadMiddleware, imageController.uploadImage);
@@ -78,5 +78,7 @@ router.get("/sliderimages", getSliderImages.getSliderImages);
 //apikey
 router.get("/apikey", apiKeyConroller.getRayanaApi);
 router.put("/updateapikey", apiKeyConroller.UpdateRayanaApi);
+router.get("/stripekey", apiKeyConroller.getStripeSecretApi);
+router.put("/updatestripekey", apiKeyConroller.UpdateStripeSecretApi);
 
 module.exports = router;
