@@ -70,6 +70,8 @@ router.post(
   "/create-payment-intent",
   paymentController.handleCreatePaymentIntent
 );
+router.get("/allbookings", Bookingcontroller.getAllBookings);
+router.post("/userbookings", Bookingcontroller.getUserBookings);
 
 // image uploads
 router.post("/upload", uploadMiddleware, imageController.uploadImage);
