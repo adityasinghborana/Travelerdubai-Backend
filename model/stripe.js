@@ -1,28 +1,23 @@
-// const stripe = require('stripe')('sk_test_51MWclzAtjY5SrUmvw5yjKXWGqtX8X49DfAFmURNdF57xg8Kr4TYbEgC7DiCYyrlfvd6nfQ55mgtj5ksjRcMRGEpd003cPRNQUH'); // Replace with your actual Stripe secret key
-
-// async function createPaymentIntent(amount, currency) {
-//   try {
-//     const paymentIntent = await stripe.paymentIntents.create({
-//       amount: amount*100,
-//       currency: currency,
-//     });
-
-//     return paymentIntent.client_secret;
-//   } catch (error) {
-//     console.error(error);
-//     throw new Error('Error creating PaymentIntent');
-//   }
-// }
-
-// module.exports = {
-//   createPaymentIntent,
-// };
-
-const stripe = require("stripe")(
-  "sk_test_51MWclzAtjY5SrUmvw5yjKXWGqtX8X49DfAFmURNdF57xg8Kr4TYbEgC7DiCYyrlfvd6nfQ55mgtj5ksjRcMRGEpd003cPRNQUH"
-);
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const stripe = require("stripe");
+
+async function getStripeSecretKey() {
+  try {
+    const stripeApiKey = await prisma.StripeApi.findFirst();
+
+    console.log(stripeApiKey);
+    if (stripeApiKey && stripeApiKey.secretapikey) {
+      return stripeApiKey.secretapikey;
+    } else {
+      throw new Error("Stripe secret key not found in the database");
+    }
+  } catch (error) {
+    throw new Error(
+      "Error fetching Stripe secret key from the database: " + error.message
+    );
+  }
+}
 
 async function getCartAmountForUser(userId) {
   try {
@@ -47,6 +42,8 @@ async function getCartAmountForUser(userId) {
 async function createPaymentIntent(userId) {
   try {
     const amount = await getCartAmountForUser(userId);
+    const stripeSecretKey = await getStripeSecretKey();
+    const stripeInstance = stripe(stripeSecretKey);
 
     // Ensure that amount is a valid number
     const numericAmount = parseFloat(amount);
@@ -55,8 +52,8 @@ async function createPaymentIntent(userId) {
     }
 
     // Create payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: numericAmount * 100, // Convert to cents
+    const paymentIntent = await stripeInstance.paymentIntents.create({
+      amount: 20 * 100, // Convert to cents
       currency: "USD",
     });
 

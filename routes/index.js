@@ -69,7 +69,7 @@ router.post("/bookings", Bookingcontroller.book);
 router.post(
   "/create-payment-intent",
   paymentController.handleCreatePaymentIntent
-); // for user and admin
+);
 
 // image uploads
 router.post("/upload", uploadMiddleware, imageController.uploadImage);
