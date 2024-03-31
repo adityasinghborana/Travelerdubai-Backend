@@ -3,130 +3,76 @@ const prisma = new PrismaClient();
 
 const homeModel = {
   async adddata({
-    counter1,
-    counter2,
-    counter3,
-    counter4,
-    detail,
-    detail1,
-    detail2,
     gridsectionheading,
     gridsectionsubheading,
     heading1,
     heading2,
     heading3,
-    heading4,
     imagepath,
     imagepath2,
     imagepath3,
-    label1,
-    label2,
-    label3,
-    label4,
-    subheading1,
-    subheading2,
     subtitle,
+    detail,
     title,
   }) {
     await prisma.Homepage.create({
       data: {
-        counter1,
-        counter2,
-        counter3,
-        counter4,
-        detail,
-        detail1,
-        detail2,
         gridsectionheading,
         gridsectionsubheading,
         heading1,
         heading2,
         heading3,
-        heading4,
         imagepath,
         imagepath2,
         imagepath3,
-        label1,
-        label2,
-        label3,
-        label4,
-        subheading1,
-        subheading2,
         subtitle,
+        detail,
         title,
       },
     });
     return { message: "Image added successfully" };
   },
   async updateData({
-    id,
-    counter1,
-    counter2,
-    counter3,
-    counter4,
-    detail,
-    detail1,
-    detail2,
     gridsectionheading,
     gridsectionsubheading,
     heading1,
     heading2,
     heading3,
-    heading4,
     imagepath,
     imagepath2,
     imagepath3,
-    label1,
-    label2,
-    label3,
-    label4,
-    subheading1,
-    subheading2,
     subtitle,
+    detail,
     title,
   }) {
-    const updatedHomepage = await prisma.Homepage.update({
+    const updatedHomepage = await prisma.homepage.update({
       where: { id }, // Specify the ID of the entity to update
       data: {
-        counter1,
-        counter2,
-        counter3,
-        counter4,
-        detail,
-        detail1,
-        detail2,
         gridsectionheading,
         gridsectionsubheading,
         heading1,
         heading2,
         heading3,
-        heading4,
         imagepath,
         imagepath2,
         imagepath3,
-        label1,
-        label2,
-        label3,
-        label4,
-        subheading1,
-        subheading2,
         subtitle,
+        detail,
         title,
-        // ... Include other fields you want to update
       },
     });
     return { message: "Homepage updated successfully", updatedHomepage };
   },
 
   async getAllData() {
-    return await prisma.Homepage.findFirst();
+    return await prisma.homepage.findFirst();
   },
   async getBackgroundimages() {
-    return await prisma.BackgroundImage.findMany();
+    return await prisma.backgroundImage.findMany();
   },
 
   async addimage({ imageUrl }) {
-    await prisma.BackgroundImage.create({
+    await prisma.backgroundImage.create({
       data: {
         imageUrl,
       },
@@ -135,7 +81,7 @@ const homeModel = {
   },
 
   async deleteimage(id) {
-    await prisma.BackgroundImage.delete({
+    await prisma.backgroundImage.delete({
       where: {
         id,
       },

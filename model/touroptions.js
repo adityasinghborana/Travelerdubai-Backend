@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require("axios");
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -8,11 +8,11 @@ const Touroption = {
     try {
       const touroptionresponse = await axios.post(
         "https://sandbox.raynatours.com/api/Tour/touroption",
-        requestBodyData,  // Include the request body data in the POST request
+        requestBodyData, // Include the request body data in the POST request
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json', // Specify the content type of the request body
+            "Content-Type": "application/json", // Specify the content type of the request body
           },
         }
       );
@@ -29,49 +29,48 @@ const Touroption = {
       });
 
       // Extract specific fields directly from the Prisma model
-     // const extractedData = {
-       // addPriceAdult: prismaData.addPriceadult * adult,
-        //addPriceChildren: prismaData.addPricechild * children,
-        //additionalPriceInfant: prismaData.addPriceinfant * infant,
+      // const extractedData = {
+      // addPriceAdult: prismaData.addPriceadult * adult,
+      //addPriceChildren: prismaData.addPricechild * children,
+      //additionalPriceInfant: prismaData.addPriceinfant * infant,
       //};//
-	     const extractedData = {
+      const extractedData = {
         addPriceAdult: (prismaData?.addPriceadult ?? 0) * adult,
         addPriceChildren: (prismaData?.addPricechild ?? 0) * children,
         additionalPriceInfant: (prismaData?.addPriceinfant ?? 0) * infant,
-    };
-    
+      };
 
       return {
         extractedData: extractedData,
         apiResponseData: touroptionresponse.data,
       };
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       throw error; // Re-throw the error to be caught by the controller
     }
   },
 
-  fetchstaticData: async (token, requestBody) => {
-    console
+  fetchstaticData: async (requestBody) => {
+    const api = await prisma.rayanaApi.findFirst();
+    const key = api.apikey;
+    console.log(key);
     try {
       const touroptionstaticresponse = await axios.post(
-
         "https://sandbox.raynatours.com/api/Tour/touroptionstaticdata",
-        requestBody,  // Include the request body data in the POST request
+        requestBody, // Include the request body data in the POST request
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json', // Specify the content type of the request body
+            Authorization: `Bearer ${key}`,
+            "Content-Type": "application/json", // Specify the content type of the request body
           },
         }
       );
 
       // Log the response data if needed
-    
 
       return touroptionstaticresponse.data;
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       throw error; // Re-throw the error to be caught by the controller
     }
   },

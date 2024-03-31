@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { PrismaClient } = require("@prisma/client");
+const priceModel = require("./pricemodel");
 
 const prisma = new PrismaClient();
 
@@ -326,72 +327,9 @@ const cityModel = {
       } // tour option ending
 
       //for tourpricing
-      const savedTourstaticdata2 = await prisma.Tourstaticdata.findMany();
-      for (const tourdata of savedTourstaticdata2) {
-        try {
-          const TourstaticData = {
-            countryId: tourdata.countryId,
-            cityId: tourdata.cityId,
-            travelDate: formattedDate,
-          };
-          // ... (unchanged code for processing tour data)
 
-          const tourpriceresponse = await axios.post(
-            "https://sandbox.raynatours.com/api/Tour/tourlist",
-            TourstaticData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
-          const tourprice = tourpriceresponse.data.result;
-          console.log(tourprice);
-          try {
-            if (Array.isArray(tourprice)) {
-              for (const price of tourprice) {
-                const tourpriceToSave = {
-                  tourId: price.tourId,
-                  contractId: staticdata2.contractId,
-                  amount: staticdata2.amount,
-                  discount: staticdata2.discount,
-                  sortOrder: 0, // Sorting order (optional)
-                  addPrice: 0,
-                };
-
-                // Save each tour data entry into the 'Tourstaticdata' model using Prisma
-                try {
-                  await prisma.tourPricing.createMany({
-                    data: tourpriceToSave,
-                  });
-                  console.log("Hurray price is added");
-                  console.log(tourpriceToSave);
-                } catch (error) {
-                  console.error(
-                    "Error occurred while saving TourOptionstaticdata:",
-                    error
-                  );
-                  // Handle the error according to your application needs
-                }
-                // prisma ends
-              }
-            }
-          } catch (error) {
-            console.error(
-              "An error occurred while saving tourstaticdatabyid data:",
-              error
-            );
-            // Handle the error based on your application's needs
-          }
-        } catch (error) {
-          console.error(
-            `An error occurred while fetching or saving tour data for cityId: ${tourdata.cityId}`,
-            error
-          );
-          // Handle the error based on your application's needs
-        }
-      } // tour pricing ending
+      priceModel.fetchprice;
+      //tour pricing ending
     } catch (error) {
       console.error("An error occurred while fetching or saving data:", error);
       throw new Error("An error occurred while fetching or saving data");
