@@ -31,7 +31,7 @@ const ApiModel = {
   },
   async getStripeSecretApiKey() {
     try {
-      const apiKey = await prisma.rayanaApi.findFirst();
+      const apiKey = await prisma.StripeApi.findFirst();
       console.log(apiKey);
       return apiKey;
     } catch (error) {
@@ -41,12 +41,13 @@ const ApiModel = {
   },
   async updateStripeSecretApiKey(key) {
     try {
-      const apiKey = await prisma.rayanaApi.update({
+      const apiKey = await prisma.StripeApi.update({
         where: {
           id: key.id,
         },
         data: {
-          apikey: key.apikey,
+          secretapikey: key.secretapikey,
+          publishableapikey: key.publishableapikey,
         },
       });
       console.log("updated api key ");

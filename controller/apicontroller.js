@@ -27,7 +27,7 @@ const ApiController = {
   },
   async getStripeSecretApi(req, res) {
     try {
-      const apiKey = await apiModel.getRayanaApiKey(); // Added parentheses to call the function getApiKey
+      const apiKey = await apiModel.getStripeSecretApiKey(); // Added parentheses to call the function getApiKey
       return res.json(apiKey);
     } catch (error) {
       console.error(error); // Changed console.log to console.error for error logging
