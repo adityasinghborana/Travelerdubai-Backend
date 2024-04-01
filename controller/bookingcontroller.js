@@ -22,6 +22,24 @@ const Bookingcontroller = {
       res.status(500).json({ error: "An error occurred while fetching data" });
     }
   },
+
+  async getAllBookings(req, res) {
+    try {
+      const allbookings = await BookingModel.getAllBookings();
+      res.json(allbookings);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getUserBookings(req, res) {
+    try {
+      const user = req.body;
+      const bookings = await BookingModel.getBookingResultsByUser(user.id);
+      res.json(bookings);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 module.exports = Bookingcontroller;
