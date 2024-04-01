@@ -28,7 +28,7 @@ router.put("/updateuser", userController.updateUser); // if you want change it t
 router.get("/homepage", homepageController.getAllData); //for admin and user
 router.get("/bgimage", homepageController.getbgimage); //for admin and user
 router.post("/uploadimage", homepageController.addbgimage); //for admin
-router.delete("/deleteimage", homepageController.deletebgimage); //for admin
+//router.delete("/deleteimage", homepageController.deletebgimage); //for admin
 router.patch("/updatedata", homepageController.updateAllData); //for admin
 router.post("/addhomedata", homepageController.addAllData); //for admin
 
@@ -48,7 +48,8 @@ router.get("/tours", tourController.getallTours); //for admin and user
 router.get("/tourtypes", tourController.getalltourtype); //for admin and user
 router.get("/tourdetails", tourController.gettoursData); //for admin and user
 router.get("/fetchprice", priceController.fetchprice); //for admin and user
-// City Routes
+router.delete("/deletetour", tourController.deleteToursData);
+// tour Routes
 
 router.get("/events", eventController.getallevents);
 router.get("/eventtypes", eventController.getalleventtype);
