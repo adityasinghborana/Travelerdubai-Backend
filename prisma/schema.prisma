@@ -148,7 +148,7 @@ model Tourstaticdata {
   contractId                Int
   recommended               Boolean
   isPrivate                 Boolean
-  city                      City                   @relation(fields: [cityId], references: [CityId]) // Define the relationship
+  city                      City                   @relation(fields: [cityId], references: [CityId], onDelete: Cascade) // Define the relationship
   tourdetails               Tourstaticdatabyid[]
   tourOptions               TourOptionstaticdata[]
   tourpricing               TourPricing[]
@@ -202,7 +202,7 @@ model Tourstaticdatabyid {
   tourExclusion                      String?
   howToRedeem                        String?
   cutOffhrs                          Int?
-  tourstaticdata                     Tourstaticdata @relation(fields: [TourId], references: [tourId]) // Define the relationship
+  tourstaticdata                     Tourstaticdata @relation(fields: [TourId], references: [tourId], onDelete: Cascade) // Define the relationship
   tourImages                         TourImagess[] // Define relationship with TourImage
   tourReviews                        TourReview[] // Define relationship with TourReview
 }
@@ -216,7 +216,7 @@ model TourImagess {
   isFrontImage        Int
   isBannerImage       Int
   isBannerRotateImage Int
-  tourstaticdatabyid  Tourstaticdatabyid @relation(fields: [tourId], references: [TourId])
+  tourstaticdatabyid  Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
 }
 
 // Define the Tourreview model
@@ -231,7 +231,7 @@ model TourReview {
   rating             String
   imagePath          String
   guestName          String
-  tourstaticdatabyid Tourstaticdatabyid @relation(fields: [tourId], references: [TourId])
+  tourstaticdatabyid Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
 }
 
 model TourPricing {
@@ -244,7 +244,7 @@ model TourPricing {
   addPriceadult  Float?
   addPricechild  Float?
   addPriceinfant Float? // Additional price (optional)
-  tour           Tourstaticdata @relation(fields: [tourId], references: [tourId])
+  tour           Tourstaticdata @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
 }
 
 model TourOptionstaticdata {
@@ -266,7 +266,7 @@ model TourOptionstaticdata {
   maxPax                        Int
   duration                      String
   timeZone                      String
-  tour                          Tourstaticdata @relation(fields: [tourId], references: [tourId])
+  tour                          Tourstaticdata @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
 }
 
 model TourOption {
@@ -309,7 +309,7 @@ model OperationDay {
   friday       Int
   saturday     Int
   sunday       Int
-  tourOption   TourOption @relation(fields: [tourOptionId], references: [id])
+  tourOption   TourOption @relation(fields: [tourOptionId], references: [id], onDelete: Cascade)
 }
 
 // Define the TransferTime model
@@ -337,7 +337,7 @@ model TransferTime {
   childPolicyDescription        String
   cutOffhrs                     Int
   onRequestCutoff               Boolean
-  tourOption                    TourOption @relation(fields: [tourOptionId], references: [id])
+  tourOption                    TourOption @relation(fields: [tourOptionId], references: [id], onDelete: Cascade)
 }
 
 // Define the Tourlist 

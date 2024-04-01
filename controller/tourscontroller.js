@@ -40,5 +40,17 @@ const tourController = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+  async deleteToursData(req, res) {
+    const tour = parseInt(req.query.id);
+    console.log(tour);
+    try {
+      const data = await tourModel.deleteTourById(tour); // Adjusted method call
+      res.json(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
 };
+
 module.exports = tourController;

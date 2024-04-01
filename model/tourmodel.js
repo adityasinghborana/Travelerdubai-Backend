@@ -37,5 +37,26 @@ const tourmodel = {
     });
   },
   // end of the function get tor data
+
+  async deleteTourById(tourId) {
+    try {
+      // Delete tour static data
+      await prisma.Tourstaticdata.delete({
+        where: { tourId: tourId },
+      });
+
+      console.log(
+        `Tour with ID ${tourId} and associated data deleted successfully.`
+      );
+    } catch (error) {
+      console.error(
+        `Error deleting tour with ID ${tourId} and associated data:`,
+        error
+      );
+      throw new Error(
+        `Error deleting tour with ID ${tourId} and associated data`
+      );
+    }
+  },
 };
 module.exports = tourmodel;
