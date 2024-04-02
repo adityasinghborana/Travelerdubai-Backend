@@ -17,6 +17,7 @@ const imageController = require("../controller/imagecontroller");
 const uploadMiddleware = require("../middlewares/multerMiddleware");
 const getSliderImages = require("../controller/backgroundimage");
 const apiKeyConroller = require("../controller/apicontroller");
+const emailConroller = require("../controller/email_controller");
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
 router.post("/createusers", userController.createUser); //for admin and user
@@ -83,5 +84,10 @@ router.get("/apikey", apiKeyConroller.getRayanaApi);
 router.put("/updateapikey", apiKeyConroller.UpdateRayanaApi);
 router.get("/stripekey", apiKeyConroller.getStripeSecretApi);
 router.put("/updatestripekey", apiKeyConroller.UpdateStripeSecretApi);
+
+//email routes
+
+router.get("/email", emailConroller.getEmail);
+router.patch("/update-email", emailConroller.updateEmail);
 
 module.exports = router;

@@ -506,3 +506,9 @@ model StripeApi {
   secretapikey      String @db.LongText
   publishableapikey String @db.LongText
 }
+
+model Emailtemplate {
+  id      Int    @id @default(autoincrement())
+  subject String @db.LongText
+  body    String @db.LongText
+}
