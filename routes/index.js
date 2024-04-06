@@ -29,7 +29,7 @@ router.put("/updateuser", userController.updateUser); // if you want change it t
 router.get("/homepage", homepageController.getAllData); //for admin and user
 router.get("/bgimage", homepageController.getbgimage); //for admin and user
 router.post("/uploadimage", homepageController.addbgimage); //for admin
-//router.delete("/deleteimage", homepageController.deletebgimage); //for admin
+router.delete("/deleteimage", homepageController.deletebgimage); //for admin
 router.patch("/updatedata", homepageController.updateAllData); //for admin
 router.post("/addhomedata", homepageController.addAllData); //for admin
 
@@ -49,8 +49,7 @@ router.get("/tours", tourController.getallTours); //for admin and user
 router.get("/tourtypes", tourController.getalltourtype); //for admin and user
 router.get("/tourdetails", tourController.gettoursData); //for admin and user
 router.get("/fetchprice", priceController.fetchprice); //for admin and user
-router.delete("/deletetour", tourController.deleteToursData);
-// tour Routes
+// City Routes
 
 router.get("/events", eventController.getallevents);
 router.get("/eventtypes", eventController.getalleventtype);
@@ -71,9 +70,7 @@ router.post("/bookings", Bookingcontroller.book);
 router.post(
   "/create-payment-intent",
   paymentController.handleCreatePaymentIntent
-);
-router.get("/allbookings", Bookingcontroller.getAllBookings);
-router.post("/userbookings", Bookingcontroller.getUserBookings);
+); // for user and admin
 
 // image uploads
 router.post("/upload", uploadMiddleware, imageController.uploadImage);
@@ -82,8 +79,6 @@ router.get("/sliderimages", getSliderImages.getSliderImages);
 //apikey
 router.get("/apikey", apiKeyConroller.getRayanaApi);
 router.put("/updateapikey", apiKeyConroller.UpdateRayanaApi);
-router.get("/stripekey", apiKeyConroller.getStripeSecretApi);
-router.put("/updatestripekey", apiKeyConroller.UpdateStripeSecretApi);
 
 //email routes
 
