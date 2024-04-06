@@ -52,17 +52,18 @@ const homeController = {
       res.status(500).json({ error: errorMessage });
     }
   },
+
+  async deletebgimage(req, res) {
+    try {
+      const { id } = req.body;
+      const result = await homepageModel.deleteimage(id);
+      res.status(200).json(result);
+    } catch (error) {
+      console.error(error);
+      const errorMessage = error.message || "Internal server error";
+      res.status(500).json({ error: errorMessage });
+    }
+  },
 };
-async function deletebgimage(req, res) {
-  try {
-    const { id } = req.body;
-    const result = await homepageModel.deleteimage(id);
-    res.status(200).json(result);
-  } catch (error) {
-    console.error(error);
-    const errorMessage = error.message || "Internal server error";
-    res.status(500).json({ error: errorMessage });
-  }
-}
 
 module.exports = homeController;
