@@ -18,6 +18,7 @@ const uploadMiddleware = require("../middlewares/multerMiddleware");
 const getSliderImages = require("../controller/backgroundimage");
 const apiKeyConroller = require("../controller/apicontroller");
 const emailConroller = require("../controller/email_controller");
+const rolecontroller = require("../controller/rolecontroller");
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
 router.post("/createusers", userController.createUser); //for admin and user
@@ -84,5 +85,9 @@ router.put("/updateapikey", apiKeyConroller.UpdateRayanaApi);
 
 router.get("/email", emailConroller.getEmail);
 router.patch("/update-email", emailConroller.updateEmail);
+// get bookings
+router.post("/userbookings", Bookingcontroller.getUserBookings);
+//vendors
+router.get("/allvendors", rolecontroller.fetchAllVendor);
 
 module.exports = router;
