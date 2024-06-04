@@ -89,5 +89,7 @@ router.patch("/update-email", emailConroller.updateEmail);
 router.post("/userbookings", Bookingcontroller.getUserBookings);
 //vendors
 router.get("/allvendors", rolecontroller.fetchAllVendor);
+router.post("/vendor", rolecontroller.fetchVendor);
+router.post("/signupvendor", rolecontroller.signupVendor);
 
 module.exports = router;

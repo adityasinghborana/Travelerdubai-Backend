@@ -135,17 +135,10 @@ model Tourstaticdata {
   cityId                    Int
   cityName                  String
   tourName                  String
-  reviewCount               Int
-  rating                    Float
   duration                  String
   imagePath                 String
-  imageCaptionName          String
   cityTourTypeId            String
   cityTourType              String
-  tourShortDescription      String                 @db.LongText
-  cancellationPolicyName    String                 @db.LongText
-  isSlot                    Boolean
-  onlyChild                 Boolean
   contractId                Int
   recommended               Boolean
   isPrivate                 Boolean
@@ -164,12 +157,7 @@ model Tourstaticdatabyid {
   cityId                             Int
   cityName                           String
   tourName                           String         @unique
-  reviewCount                        Int
-  rating                             Float
   duration                           String
-  departurePoint                     String
-  reportingTime                      String
-  tourLanguage                       String
   imagePath                          String
   imageCaptionName                   String
   cityTourTypeId                     String
@@ -177,31 +165,19 @@ model Tourstaticdatabyid {
   tourDescription                    String         @db.LongText
   tourInclusion                      String         @db.LongText
   tourShortDescription               String         @db.LongText
-  raynaToursAdvantage                String         @db.LongText
-  whatsInThisTour                    String         @db.LongText
   importantInformation               String         @db.LongText
   itenararyDescription               String         @db.LongText
   usefulInformation                  String         @db.LongText
-  faqDetails                         String         @db.LongText
-  termsAndConditions                 String         @db.LongText
-  cancellationPolicyName             String         @db.LongText
-  cancellationPolicyDescription      String         @db.LongText
-  childCancellationPolicyName        String         @db.LongText
-  childCancellationPolicyDescription String         @db.LongText
   childAge                           String
   infantAge                          String
   infantCount                        Int
   isSlot                             Boolean
   onlyChild                          Boolean
   contractId                         Int
-  latitude                           String
-  longitude                          String
   startTime                          String
   meal                               String?
-  videoUrl                           String?
   googleMapUrl                       String?
   tourExclusion                      String?
-  howToRedeem                        String?
   cutOffhrs                          Int?
   tourstaticdata                     Tourstaticdata @relation(fields: [TourId], references: [tourId], onDelete: Cascade) // Define the relationship
   tourImages                         TourImagess[] // Define relationship with TourImage
@@ -213,27 +189,10 @@ model TourImagess {
   id                  Int                @id @default(autoincrement())
   tourId              Int
   imagePath           String             @unique
-  imageCaptionName    String
-  isFrontImage        Int
-  isBannerImage       Int
-  isBannerRotateImage Int
   tourstaticdatabyid  Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
 }
 
-// Define the Tourreview model
 
-model TourReview {
-  id                 Int                @id @default(autoincrement())
-  tourId             Int
-  reviewId           Int                @unique
-  reviewTitle        String
-  reviewContent      String             @db.LongText
-  visitMonth         String
-  rating             String
-  imagePath          String
-  guestName          String
-  tourstaticdatabyid Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
-}
 
 model TourPricing {
   id             Int            @id @default(autoincrement())
@@ -248,7 +207,7 @@ model TourPricing {
   tour           Tourstaticdata @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
 }
 
-model TourOptionstaticdata {
+model TourOption {
   id                            Int            @id @default(autoincrement())
   tourId                        Int
   tourOptionId                  Int            @unique
@@ -256,46 +215,15 @@ model TourOptionstaticdata {
   childAge                      String
   infantAge                     String
   optionDescription             String
-  cancellationPolicy            String
-  cancellationPolicyDescription String
-  childPolicyDescription        String
-  xmlcode                       String
-  xmloptioncode                 String
-  countryId                     Int
-  cityId                        Int
-  minPax                        Int
-  maxPax                        Int
-  duration                      String
-  timeZone                      String
-  tour                          Tourstaticdata @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
-}
-
-model TourOption {
-  id                            Int            @id @default(autoincrement())
-  tourId                        Int
-  optionName                    String         @unique
-  childAge                      String
-  infantAge                     String
-  optionDescription             String
-  cancellationPolicy            String
-  cancellationPolicyDescription String
-  childPolicyDescription        String
-  xmlcode                       String
-  xmloptioncode                 String
-  countryId                     Int
-  cityId                        Int
   minPax                        Int
   maxPax                        Int
   duration                      String
   timeZone                      String
   isWithoutAdult                Boolean
   isTourGuide                   Int
-  compulsoryOptions             Boolean
-  isHideRateBreakup             Boolean
   isHourly                      Boolean
   timeSlots                     TimeSlot[] // Establish a one-to-many relationship with TimeSlot
   operationDays                 OperationDay[] // Establish a one-to-many relationship with OperationDay
-  transferTimes                 TransferTime[] // Establish a one-to-many relationship with TransferTime
 }
 
 // Define the OperationDay model
@@ -313,50 +241,6 @@ model OperationDay {
   tourOption   TourOption @relation(fields: [tourOptionId], references: [id], onDelete: Cascade)
 }
 
-// Define the TransferTime model
-
-model TransferTime {
-  id                            Int        @id @default(autoincrement())
-  tourId                        Int
-  tourOptionId                  Int
-  transferType                  String
-  transferTime                  String
-  duration                      String
-  mobileVoucher                 Boolean
-  printedVoucher                Boolean
-  instantConfirmation           Boolean
-  onRequest                     Boolean
-  requiedhrs                    Boolean
-  disableChild                  Boolean
-  disableInfant                 Boolean
-  twoWayTransfer                Boolean
-  portalTicket                  Boolean
-  allowTodaysBooking            Boolean
-  cancellationPolicy            String
-  cancellationPolicyDescription String
-  childPolicy                   String
-  childPolicyDescription        String
-  cutOffhrs                     Int
-  onRequestCutoff               Boolean
-  tourOption                    TourOption @relation(fields: [tourOptionId], references: [id], onDelete: Cascade)
-}
-
-// Define the Tourlist 
-
-model Tourlist {
-  id           Int    @id @default(autoincrement())
-  tourId       Int
-  contractId   Int
-  amount       Float
-  Priceaddon   Float
-  discount     Float
-  rewardPoints Int
-  sortOrder    Int
-  pointRemark  String
-}
-
-// Define the Transfer model
-
 model Ctouroption {
   id                    Int     @id @default(autoincrement())
   tourId                Int
@@ -366,7 +250,6 @@ model Ctouroption {
   adultPrice            Float
   childPrice            Float
   infantPrice           Float
-  withoutDiscountAmount Float
   finalAmount           Float
   startTime             String
   departureTime         String
@@ -375,38 +258,10 @@ model Ctouroption {
   allowTodaysBooking    Boolean
   cutOff                Int
   isSlot                Boolean
-  isDefaultTransfer     Int
-  rateKey               String?
-  inventoryId           String?
-  adultBuyingPrice      Float
-  childBuyingPrice      Float
-  infantBuyingPrice     Float
-  adultSellingPrice     Float
-  childSellingPrice     Float
-  infantSellingPrice    Float
-  companyBuyingPrice    Float
-  companySellingPrice   Float
-  agentBuyingPrice      Float
-  agentSellingPrice     Float
-  subAgentBuyingPrice   Float
-  subAgentSellingPrice  Float
-  finalSellingPrice     Float
-  vatbuying             Float
-  vatselling            Float
-  currencyFactor        Float
-  agentPercentage       Float
-  transferBuyingPrice   Float
-  transferSellingPrice  Float
-  serviceBuyingPrice    Float
-  serviceSellingPrice   Float
-  rewardPoints          Int
   tourChildAge          Int
   maxChildAge           Int
   maxInfantAge          Int
   minimumPax            Int
-  pointRemark           String
-  adultRetailPrice      Float
-  childRetailPrice      Float
 }
 
 // for coupons
