@@ -144,7 +144,6 @@ model Tourstaticdata {
   isPrivate                 Boolean
   city                      City                   @relation(fields: [cityId], references: [CityId], onDelete: Cascade) // Define the relationship
   tourdetails               Tourstaticdatabyid[]
-  tourOptions               TourOptionstaticdata[]
   tourpricing               TourPricing[]
 }
 
@@ -181,7 +180,7 @@ model Tourstaticdatabyid {
   cutOffhrs                          Int?
   tourstaticdata                     Tourstaticdata @relation(fields: [TourId], references: [tourId], onDelete: Cascade) // Define the relationship
   tourImages                         TourImagess[] // Define relationship with TourImage
-  tourReviews                        TourReview[] // Define relationship with TourReview
+
 }
 
 // Define the TourImage model
