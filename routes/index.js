@@ -19,6 +19,8 @@ const getSliderImages = require("../controller/backgroundimage");
 const apiKeyConroller = require("../controller/apicontroller");
 const emailConroller = require("../controller/email_controller");
 const rolecontroller = require("../controller/rolecontroller");
+const tourtypescontroller = require("../controller/tourtypecontroller");
+const createcitycontroller = require("../controller/addcitycontroller");
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
 router.post("/createusers", userController.createUser); //for admin and user
@@ -91,5 +93,10 @@ router.post("/userbookings", Bookingcontroller.getUserBookings);
 router.get("/allvendors", rolecontroller.fetchAllVendor);
 router.post("/vendor", rolecontroller.fetchVendor);
 router.post("/signupvendor", rolecontroller.signupVendor);
+
+
+// create tourtypes 
+router.post("/addtourtypes", tourtypescontroller.tourtype);
+router.post("/addcity",createcitycontroller.addCity);
 
 module.exports = router;

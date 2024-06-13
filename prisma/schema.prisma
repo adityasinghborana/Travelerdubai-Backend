@@ -113,7 +113,7 @@ model TimeSlot {
 
 model City {
   id       Int              @id @default(autoincrement())
-  CityId   Int              @unique
+  CityId  Int?              @unique 
   CityName String
   tours    Tourstaticdata[] // Define the one-to-many relationship
   event    Eventdata[]
