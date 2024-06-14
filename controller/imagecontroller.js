@@ -14,7 +14,8 @@ exports.uploadImage = async (req, res) => {
     const image = await prisma.BackgroundImage.create({
       data: {
         filename: originalname,
-        url: path, // Assuming path is the URL where the image is stored
+        url: path,
+        
       },
     });
 

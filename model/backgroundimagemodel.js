@@ -4,7 +4,12 @@ const prisma = new PrismaClient();
 
 const BackgroudImageModel = {
   async getBackgroundImages() {
-    const images = await prisma.BackgroundImage.findMany();
+    const images = await prisma.BackgroundImage.findMany({
+      where: {
+        isVisibleSlider:true
+      }
+      
+    });
     console.log(images);
     return images;
   },

@@ -17,3 +17,4 @@ catch(e){
     }
 };
 module.exports = addCity;
+

@@ -18,3 +18,9 @@ const TourTypeModel = {
         }
     }};
 module.exports = TourTypeModel;
+
+
+
+
+
+

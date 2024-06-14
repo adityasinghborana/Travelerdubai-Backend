@@ -292,6 +292,7 @@ model BackgroundImage {
   id       Int    @id @default(autoincrement())
   filename String // Adjusted field name
   url      String
+  isVisibleSlider Boolean @default(false)
 }
 
 model Aboutus {

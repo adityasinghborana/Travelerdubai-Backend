@@ -68,7 +68,9 @@ const homeModel = {
     return await prisma.homepage.findFirst();
   },
   async getBackgroundimages() {
-    return await prisma.backgroundImage.findMany();
+    return await prisma.backgroundImage.findMany({where:{
+      isVisibleSlider:true
+    }});
   },
 
   async addimage({ imageUrl }) {

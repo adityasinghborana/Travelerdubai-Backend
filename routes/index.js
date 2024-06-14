@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const path = require('path');
 const userController = require("../controller/usercontroller");
 const homepageController = require("../controller/homepageController");
 const cityController = require("../controller/citycontroller");
@@ -21,6 +22,8 @@ const emailConroller = require("../controller/email_controller");
 const rolecontroller = require("../controller/rolecontroller");
 const tourtypescontroller = require("../controller/tourtypecontroller");
 const createcitycontroller = require("../controller/addcitycontroller");
+const BackgroudImageController = require("../controller/backgroundimage");
+//const librarycontroller = require("../controller/allimagescontroller");
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
 router.post("/createusers", userController.createUser); //for admin and user
@@ -79,6 +82,7 @@ router.post(
 router.post("/upload", uploadMiddleware, imageController.uploadImage);
 router.get("/sliderimages", getSliderImages.getSliderImages);
 
+
 //apikey
 router.get("/apikey", apiKeyConroller.getRayanaApi);
 router.put("/updateapikey", apiKeyConroller.UpdateRayanaApi);
@@ -98,5 +102,6 @@ router.post("/signupvendor", rolecontroller.signupVendor);
 // create tourtypes 
 router.post("/addtourtypes", tourtypescontroller.tourtype);
 router.post("/addcity",createcitycontroller.addCity);
+router.get('/library',BackgroudImageController.getAllImages );
 
 module.exports = router;
