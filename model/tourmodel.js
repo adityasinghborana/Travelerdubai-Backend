@@ -32,7 +32,7 @@ const tourmodel = {
       },
       include: {
         tourImages: true,
-        tourReviews: true,
+        
       },
     });
   },

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const path = require('path');
+const path = require("path");
 const userController = require("../controller/usercontroller");
 const homepageController = require("../controller/homepageController");
 const cityController = require("../controller/citycontroller");
@@ -16,14 +16,14 @@ const Bookingcontroller = require("../controller/bookingcontroller");
 const paymentController = require("../controller/stripecontroller");
 const imageController = require("../controller/imagecontroller");
 const uploadMiddleware = require("../middlewares/multerMiddleware");
-const getSliderImages = require("../controller/backgroundimage");
 const apiKeyConroller = require("../controller/apicontroller");
 const emailConroller = require("../controller/email_controller");
 const rolecontroller = require("../controller/rolecontroller");
 const tourtypescontroller = require("../controller/tourtypecontroller");
 const createcitycontroller = require("../controller/addcitycontroller");
 const BackgroudImageController = require("../controller/backgroundimage");
-//const librarycontroller = require("../controller/allimagescontroller");
+const AddTourController = require("../controller/addtourcontroller");
+
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
 router.post("/createusers", userController.createUser); //for admin and user
@@ -35,7 +35,7 @@ router.put("/updateuser", userController.updateUser); // if you want change it t
 router.get("/homepage", homepageController.getAllData); //for admin and user
 router.get("/bgimage", homepageController.getbgimage); //for admin and user
 router.post("/uploadimage", homepageController.addbgimage); //for admin
-//router.delete("/deleteimage", homepageController.deletebgimage); //for admin
+router.delete("/deleteimage", homepageController.deletebgimage); //for admin
 router.patch("/updatedata", homepageController.updateAllData); //for admin
 router.post("/addhomedata", homepageController.addAllData); //for admin
 
@@ -50,6 +50,7 @@ router.get(
   "/fetch-countries-and-cities",
   cityController.fetchCountriesAndCities
 ); //for admin
+
 router.get("/cities", tourController.getAllData); //for admin and user
 router.get("/tours", tourController.getallTours); //for admin and user
 router.get("/tourtypes", tourController.getalltourtype); //for admin and user
@@ -80,12 +81,13 @@ router.post(
 
 // image uploads
 router.post("/upload", uploadMiddleware, imageController.uploadImage);
-router.get("/sliderimages", getSliderImages.getSliderImages);
-
+router.get("/sliderimages", BackgroudImageController.getSliderImages);
 
 //apikey
 router.get("/apikey", apiKeyConroller.getRayanaApi);
 router.put("/updateapikey", apiKeyConroller.UpdateRayanaApi);
+router.get("/stripekey", apiKeyConroller.getStripeSecretApi);
+router.put("/updatestripekey", apiKeyConroller.UpdateStripeSecretApi);
 
 //email routes
 
@@ -98,10 +100,13 @@ router.get("/allvendors", rolecontroller.fetchAllVendor);
 router.post("/vendor", rolecontroller.fetchVendor);
 router.post("/signupvendor", rolecontroller.signupVendor);
 
-
-// create tourtypes 
+// create tourtypes
 router.post("/addtourtypes", tourtypescontroller.tourtype);
-router.post("/addcity",createcitycontroller.addCity);
-router.get('/library',BackgroudImageController.getAllImages );
+router.post("/addtour", AddTourController.addTour);
+
+//add city
+router.post("/addcity", createcitycontroller.addCity);
+router.get("/library", BackgroudImageController.getAllImages);
+router.patch("/updatesliderimage", homepageController.updatebgimage);
 
 module.exports = router;

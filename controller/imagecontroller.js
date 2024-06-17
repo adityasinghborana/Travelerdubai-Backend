@@ -15,7 +15,6 @@ exports.uploadImage = async (req, res) => {
       data: {
         filename: originalname,
         url: path,
-        
       },
     });
 

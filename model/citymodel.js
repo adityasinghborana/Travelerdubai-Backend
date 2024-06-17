@@ -90,6 +90,7 @@ const cityModel = {
                 contractId: tour.contractId,
                 recommended: tour.recommended,
                 isPrivate: tour.isPrivate,
+                isSlot: tour.isSlot,
               };
 
               // Save each tour data entry into the 'Tourstaticdata' model using Prisma
@@ -170,7 +171,7 @@ const cityModel = {
                   contractId: staticdata.contractId,
                   startTime: staticdata.startTime,
                   meal: staticdata.meal || null,
-              
+
                   googleMapUrl: staticdata.googleMapUrl || null,
                   tourExclusion: staticdata.tourExclusion || null,
                 };
@@ -189,10 +190,6 @@ const cityModel = {
                     const tourDatastaticdatabyidimages = {
                       tourId: staticdata.tourId, // Using the tourId from the current tour
                       imagePath: image.imagePath,
-                      imageCaptionName: image.imageCaptionName,
-                      isFrontImage: image.isFrontImage,
-                      isBannerImage: image.isBannerImage,
-                      isBannerRotateImage: image.isBannerRotateImage,
                     };
 
                     await prisma.TourImagess.createMany({
@@ -252,23 +249,14 @@ const cityModel = {
                   childAge: staticdata.childAge,
                   infantAge: staticdata.infantAge,
                   optionDescription: staticdata.optionDescription,
-                  cancellationPolicy: staticdata.cancellationPolicy,
-                  cancellationPolicyDescription:
-                    staticdata.cancellationPolicyDescription,
-                  childPolicyDescription: staticdata.childPolicyDescription,
-                  xmlcode: staticdata.xmlcode,
-                  xmloptioncode: staticdata.xmloptioncode,
-                  countryId: staticdata.countryId,
-                  cityId: staticdata.cityId,
                   minPax: staticdata.minPax,
                   maxPax: staticdata.maxPax,
                   duration: staticdata.duration,
-                  timeZone: staticdata.timeZone,
                 };
 
                 // Save each tour data entry into the 'Tourstaticdata' model using Prisma
                 try {
-                  await prisma.TourOptionstaticdata.createMany({
+                  await prisma.TourOption.createMany({
                     skipDuplicates: true,
                     data: touroptionstaticdataToSave,
                   });
@@ -300,8 +288,68 @@ const cityModel = {
       } // tour option ending
 
       //for tourpricing
+      const savedTourstaticdata21 = await prisma.Tourstaticdata.findMany();
+      console.log(savedTourstaticdata21[0]);
+      for (const tourdata of savedTourstaticdata21) {
+        try {
+          const TourstaticData = {
+            countryId: tourdata.countryId,
+            cityId: tourdata.cityId,
+            travelDate: formattedDate,
+          };
 
-      priceModel.fetchprice;
+          const tourpriceresponse = await axios.post(
+            "https://sandbox.raynatours.com/api/Tour/tourlist",
+            TourstaticData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const tourprice = tourpriceresponse.data.result;
+
+          console.log(TourstaticData);
+
+          try {
+            if (Array.isArray(tourprice)) {
+              for (const price of tourprice) {
+                const tourpriceToSave = {
+                  tourId: price.tourId,
+                  contractId: price.contractId,
+                  amount: price.amount,
+                  discount: price.discount,
+                };
+
+                // Save each tour data entry into the 'Tourstaticdata' model using Prisma
+                try {
+                  await prisma.tourPricing.createMany({
+                    skipDuplicates: true,
+
+                    data: tourpriceToSave,
+                  });
+                  console.log("Hurray price is added");
+                  console.log(tourpriceToSave);
+                } catch (error) {
+                  console.error("Error occurred while saving price", error);
+                  // Handle the error according to your application needs
+                }
+                // prisma ends
+              }
+            }
+          } catch (error) {
+            console.error("An error occurred while saving price", error);
+            // Handle the error based on your application's needs
+          }
+        } catch (error) {
+          console.error(
+            `An error occurred while fetching or saving tour price for loop}`,
+            error
+          );
+          // Handle the error based on your application's needs
+        }
+      }
       //tour pricing ending
     } catch (error) {
       console.error("An error occurred while fetching or saving data:", error);
