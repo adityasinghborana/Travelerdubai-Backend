@@ -33,6 +33,7 @@ const homeModel = {
     return { message: "Image added successfully" };
   },
   async updateData({
+    id,
     gridsectionheading,
     gridsectionsubheading,
     heading1,
@@ -48,6 +49,7 @@ const homeModel = {
     const updatedHomepage = await prisma.homepage.update({
       where: { id }, // Specify the ID of the entity to update
       data: {
+        id,
         gridsectionheading,
         gridsectionsubheading,
         heading1,
@@ -65,7 +67,6 @@ const homeModel = {
   },
 
   async getAllData() {
-
     return await prisma.homepage.findFirst();
   },
 
@@ -90,9 +91,8 @@ const homeModel = {
   async getBackgroundimages() {
     const images = await prisma.BackgroundImage.findMany({
       where: {
-        isVisibleSlider:true
-      }
-      
+        isVisibleSlider: true,
+      },
     });
     console.log(images);
     return images;
@@ -100,12 +100,11 @@ const homeModel = {
   async updateBackgroundimages(value) {
     const images = await prisma.BackgroundImage.update({
       where: {
-        id:value.id
+        id: value.id,
       },
-      data:{
-        isVisibleSlider:value.isChecked
-      }
-      
+      data: {
+        isVisibleSlider: value.isChecked,
+      },
     });
     console.log(images);
     return images;
