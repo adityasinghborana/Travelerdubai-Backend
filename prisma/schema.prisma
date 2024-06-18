@@ -97,16 +97,14 @@ model Order {
 }
 
 model TimeSlot {
-  id                        Int        @id @unique
-  tourOptionId              Int
-  timeSlotId                String
-  timeSlot                  String
-  available                 Int
-  adultPrice                Float
-  childPrice                Float
-  isDynamicPrice            Boolean
-  companyBuyingPriceDynamic Float
-  tourOption                TourOption @relation(fields: [tourOptionId], references: [id])
+  id           Int        @id @unique @default(autoincrement())
+  tourOptionId Int
+  timeSlotId   String
+  timeSlot     String
+  available    Int
+  adultPrice   Float
+  childPrice   Float
+  tourOption   TourOption @relation(fields: [tourOptionId], references: [id])
 
   @@index([tourOptionId], map: "TimeSlot_tourOptionId_fkey")
 }
@@ -187,7 +185,7 @@ model Tourstaticdatabyid {
 model TourImagess {
   id                 Int                @id @default(autoincrement())
   tourId             Int
-  imagePath          String             @unique
+  imagePath          String
   tourstaticdatabyid Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
 
   @@index([tourId], map: "TourImagess_tourId_fkey")

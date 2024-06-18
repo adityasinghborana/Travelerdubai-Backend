@@ -1,5 +1,4 @@
-const prisma = require("@prisma/client"); // Assuming you have prisma client installed and setup
-const { PrismaClient } = prisma;
+const { PrismaClient } = require("@prisma/client");
 const prismaClient = new PrismaClient();
 
 const AddTourUser = {
@@ -14,7 +13,7 @@ const AddTourUser = {
 
     let newTourId;
     do {
-      newTourId = Math.floor(Math.random() * 10000); // You can adjust the range as needed
+      newTourId = Math.floor(Math.random() * 10000); // Adjust the range as needed
     } while (existingIdSet.has(newTourId));
 
     return newTourId;
@@ -28,25 +27,41 @@ const AddTourUser = {
     });
 
     const existingOptionIdSet = new Set(
-      existingOptionIds.map((idObj) => idObj.tourOptionId)
+      existingIds.map((idObj) => idObj.tourOptionId)
     );
 
     let newTourOptionId;
     do {
-      newTourOptionId = Math.floor(Math.random() * 10000); // You can adjust the range as needed
+      newTourOptionId = Math.floor(Math.random() * 10000); // Adjust the range as needed
     } while (existingOptionIdSet.has(newTourOptionId));
 
     return newTourOptionId;
   },
 
+  async generateUniqueTimeSlotId() {
+    const existingIds = await prismaClient.TimeSlot.findMany({
+      select: {
+        id: true,
+      },
+    });
+
+    const existingTimeSlotIdSet = new Set(existingIds.map((idObj) => idObj.id));
+
+    let newTimeSlotId;
+    do {
+      newTimeSlotId = Math.floor(Math.random() * 10000); // Adjust the range as needed
+    } while (existingTimeSlotIdSet.has(newTimeSlotId));
+
+    return newTimeSlotId;
+  },
+
   async createTourUser(params) {
     try {
-      const tourId = await this.generateUniqueTourId();
-      const tourOptionId = await this.generateUniqueTourOptionId();
+      const gtourId = await this.generateUniqueTourId();
 
       const data = await prismaClient.Tourstaticdata.create({
         data: {
-          tourId: tourId,
+          tourId: gtourId,
           countryId: params.countryid,
           countryName: params.countryname,
           cityId: params.cityid,
@@ -63,9 +78,9 @@ const AddTourUser = {
         },
       });
 
-      const databyid = await prismaClient.tourstaticdatabyid.create({
+      const databyid = await prismaClient.Tourstaticdatabyid.create({
         data: {
-          TourId: tourId,
+          TourId: gtourId,
           countryId: params.countryid,
           countryName: params.countryname,
           cityId: params.cityid,
@@ -93,26 +108,83 @@ const AddTourUser = {
           tourExclusion: params.tourexclusion,
         },
       });
-      const tourOptionsList = params.optionlist.map((option) => ({
-        tourId: tourId, // Ensure tourId is defined
-        tourOptionId: option.tourOptionId, // Ensure each option in the list has a unique tourOptionId
-        optionName: option.optionName,
-        childAge: option.childAge,
-        infantAge: option.infantAge,
-        optionDescription: option.optionDescription,
-        minPax: option.minPax,
-        maxPax: option.maxPax,
-        duration: option.duration,
-      }));
 
-      // Use createMany to insert the list of tour options
-      const optiondatabyid = await prisma.TourOption.createMany({
-        data: tourOptionsList,
-        skipDuplicates: true, // Optionally skip duplicates if needed
-      });
+      // Iterate over optionlist to create TourOption, OperationDay, and TimeSlot records
+      const tourOptionsList = await Promise.all(
+        params.optionlist.map(async (option) => {
+          const gtourOptionId = await this.generateUniqueTourOptionId(); // Generate a unique ID for each option
 
-      return { data, databyid };
+          // Create TourOption
+          const createdTourOption = await prismaClient.TourOption.create({
+            data: {
+              tourId: gtourId,
+              tourOptionId: gtourOptionId,
+              optionName: option.optionname,
+              childAge: option.childage,
+              infantAge: option.infantage,
+              optionDescription: option.optiondescription,
+              minPax: option.minpax,
+              maxPax: option.maxpax,
+              duration: option.duration,
+            },
+          });
+
+          // Create OperationDay for each TourOption
+          const createdOperationDay = await prismaClient.OperationDay.create({
+            data: {
+              tourId: gtourId,
+              tourOptionId: createdTourOption.id,
+              monday: option.operationDays.monday,
+              tuesday: option.operationDays.tuesday,
+              wednesday: option.operationDays.wednesday,
+              thursday: option.operationDays.thursday,
+              friday: option.operationDays.friday,
+              saturday: option.operationDays.saturday,
+              sunday: option.operationDays.sunday,
+            },
+          });
+
+          // Create TimeSlot for each TourOption
+          const createdTimeSlots = await Promise.all(
+            (option.timeSlots || []).map(async (timeSlot) => {
+              const gtimeSlotId = await this.generateUniqueTimeSlotId();
+              const timeslotidstring = gtimeSlotId.toString();
+              return prismaClient.TimeSlot.create({
+                data: {
+                  tourOptionId: createdTourOption.id,
+                  timeSlotId: timeslotidstring,
+                  timeSlot: timeSlot.timeSlot,
+                  available: timeSlot.available,
+                  adultPrice: timeSlot.adultPrice,
+                  childPrice: timeSlot.childPrice,
+                },
+              });
+            })
+          );
+          const createdTourImagessList = await Promise.all(
+            params.imagepaths.map(async (ImagePath) => {
+              try {
+                const createdTourImagess =
+                  await prismaClient.TourImagess.createMany({
+                    data: {
+                      tourId: gtourId,
+                      imagePath: ImagePath,
+                    },
+                  });
+
+                return createdTourImagess;
+              } catch (error) {
+                console.error(`Error creating TourImagess: ${error}`);
+                throw error;
+              }
+            })
+          );
+        })
+      );
+
+      return { status: 200 };
     } catch (e) {
+      return { status: 501, e };
       console.log(e);
       throw e; // It's a good practice to re-throw the error after logging it
     }
