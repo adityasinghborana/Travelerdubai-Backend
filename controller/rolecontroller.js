@@ -8,7 +8,7 @@ const RoleController = {
     });
   },
   async fetchVendor(req, res) {
-    const vendorId = req.body
+    const vendorId = req.body;
     try {
       const vendorData = await RoleModel.FetchVendor(vendorId);
       return res.json({
@@ -16,7 +16,7 @@ const RoleController = {
       });
     } catch (error) {
       return res.json({
-        error: "internal server error"
+        error: "internal server error",
       });
     }
   },
@@ -27,14 +27,14 @@ const RoleController = {
       const signUpData = await RoleModel.vendorSignup(data);
       res.status(201).json({
         message: "Vendor signed up successfully",
-        data: signUpData
+        data: signUpData,
       });
     } catch (error) {
-      console.error('Error signing up vendor:', error);
+      console.error("Error signing up vendor:", error);
       res.status(500).json({
-        error: "Internal server error"
+        error: "Internal server error",
       });
     }
-  }
+  },
 };
 module.exports = RoleController;

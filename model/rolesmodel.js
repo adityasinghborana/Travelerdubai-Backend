@@ -5,7 +5,9 @@ const RolesModel = {
     const singleVendor = await prisma.roles.findFirst({
       where: {
         uid: reqbody.uid,
-        
+      },
+      include: {
+        tours: true,
       },
     });
     return singleVendor;
@@ -15,7 +17,7 @@ const RolesModel = {
     await prisma.roles.findMany();
   },
 
-  async  vendorSignup(vendordata) {
+  async vendorSignup(vendordata) {
     try {
       await prisma.roles.create({
         data: {
@@ -34,13 +36,13 @@ const RolesModel = {
           mobile: vendordata.mobile,
           document_tradelicense: vendordata.document_tradelicense,
           document_other: vendordata.document_other,
-          created_at: new Date() // You can omit this if you want to use the default value
+          created_at: new Date(), // You can omit this if you want to use the default value
         },
       });
-      console.log('Vendor signed up successfully');
+      console.log("Vendor signed up successfully");
     } catch (error) {
-      console.error('Error signing up vendor:', error);
+      console.error("Error signing up vendor:", error);
     }
-  }
+  },
 };
 module.exports = RolesModel;

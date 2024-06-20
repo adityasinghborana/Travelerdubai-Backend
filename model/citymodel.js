@@ -42,7 +42,7 @@ const cityModel = {
         CityName: city.cityName,
       }));
 
-      // Save fetched cities to the database using Prisma
+      //Save fetched cities to the database using Prisma
       const createdCities = await prisma.city.createMany({
         data: citiesToSave,
         skipDuplicates: true, // Optionally skip adding duplicates

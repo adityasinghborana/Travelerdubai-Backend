@@ -23,6 +23,7 @@ const tourtypescontroller = require("../controller/tourtypecontroller");
 const createcitycontroller = require("../controller/addcitycontroller");
 const BackgroudImageController = require("../controller/backgroundimage");
 const AddTourController = require("../controller/addtourcontroller");
+const Staticpage = require("../controller/staticpagescontroller");
 
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
@@ -105,8 +106,17 @@ router.post("/addtourtypes", tourtypescontroller.tourtype);
 router.post("/addtour", AddTourController.addTour);
 
 //add city
-router.post("/addcity", createcitycontroller.addCity);
+router.put("/addcity", createcitycontroller.addCity);
 router.get("/library", BackgroudImageController.getAllImages);
 router.patch("/updatesliderimage", homepageController.updatebgimage);
+//staticpages
+//router.post("/submitform", Staticpage.PostFormSubmission);
+router.get("/forms", Staticpage.getFormSubmisisionData);
+router.get("/contactusdata", Staticpage.getContactUsData);
+router.patch("/updatecontactusdata", Staticpage.updateContactUsData);
+router.get("/experiencesdata", Staticpage.getExperiencesData);
+router.patch("/updateexperiencesdata", Staticpage.updateExperiencesData);
+router.get("/footerdata", Staticpage.getFooterData);
+router.patch("/updatefooterdata", Staticpage.updateFooterData);
 
 module.exports = router;

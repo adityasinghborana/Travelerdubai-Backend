@@ -104,7 +104,7 @@ model TimeSlot {
   available    Int
   adultPrice   Float
   childPrice   Float
-  tourOption   TourOption @relation(fields: [tourOptionId], references: [id])
+  tourOption   TourOption @relation(fields: [tourOptionId], references: [tourOptionId])
 
   @@index([tourOptionId], map: "TimeSlot_tourOptionId_fkey")
 }
@@ -141,6 +141,9 @@ model Tourstaticdata {
   isvisiblePopularTours     Boolean             @default(false)
   isvisibleReccomendedTours Boolean             @default(false)
   isSlot                    Boolean
+  isVendorTour              Boolean             @default(false)
+  vendorUid                 String?
+  vendor                    Roles?              @relation(fields: [vendorUid], references: [uid])
   tourpricing               TourPricing?
   city                      City                @relation(fields: [cityId], references: [CityId], onDelete: Cascade)
   tourdetails               Tourstaticdatabyid?
@@ -177,6 +180,7 @@ model Tourstaticdatabyid {
   tourExclusion        String?
   TourId               Int            @unique
   cutOffhrs            Int?
+  isVendorTour         Boolean        @default(false)
   tourOption           TourOption[]
   tourImages           TourImagess[]
   tourstaticdata       Tourstaticdata @relation(fields: [TourId], references: [tourId], onDelete: Cascade)
@@ -192,31 +196,39 @@ model TourImagess {
 }
 
 model TourPricing {
-  id             Int            @id @default(autoincrement())
-  tourId         Int            @unique
+  id             Int             @id @default(autoincrement())
+  tourId         Int             @unique
   contractId     Int
   amount         Float
   discount       Float?
   addPriceadult  Float?
   addPricechild  Float?
   addPriceinfant Float?
-  tour           Tourstaticdata @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
+  adultPrice     Float?
+  childPrice     Float?
+  infantPrice    Float?
+  tour           Tourstaticdata? @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
 }
 
 model TourOption {
-  id                 Int                @id @default(autoincrement())
-  tourId             Int
-  optionName         String
-  childAge           String
-  infantAge          String
-  optionDescription  String
-  minPax             Int
-  maxPax             Int
-  duration           String
-  tourOptionId       Int                @unique
-  tourStaticDataById Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
-  operationDays      OperationDay[]
-  timeSlots          TimeSlot[]
+  id                            Int                @id @default(autoincrement())
+  tourId                        Int
+  optionName                    String
+  childAge                      String
+  infantAge                     String
+  optionDescription             String
+  minPax                        Int
+  maxPax                        Int
+  duration                      String
+  isWithoutTransfers            Boolean            @default(true)
+  isSharingTransfer             Boolean            @default(true)
+  isPrivateTransfer             Boolean            @default(true)
+  isPrivateBoatWithoutTransfers Boolean            @default(true)
+  isPvtYachtWithoutTransfers    Boolean            @default(true)
+  tourOptionId                  Int                @unique
+  tourStaticDataById            Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
+  operationDays                 OperationDay[]
+  timeSlots                     TimeSlot[]
 }
 
 model OperationDay {
@@ -233,29 +245,6 @@ model OperationDay {
   tourOption   TourOption @relation(fields: [tourOptionId], references: [id], onDelete: Cascade)
 
   @@index([tourOptionId], map: "OperationDay_tourOptionId_fkey")
-}
-
-model Ctouroption {
-  id                 Int     @id @default(autoincrement())
-  tourId             Int
-  tourOptionId       Int
-  transferId         Int
-  transferName       String
-  adultPrice         Float
-  childPrice         Float
-  infantPrice        Float
-  finalAmount        Float
-  startTime          String
-  departureTime      String
-  disableChild       Boolean
-  disableInfant      Boolean
-  allowTodaysBooking Boolean
-  cutOff             Int
-  isSlot             Boolean
-  tourChildAge       Int
-  maxChildAge        Int
-  maxInfantAge       Int
-  minimumPax         Int
 }
 
 model Coupon {
@@ -324,12 +313,12 @@ model Eventdata {
 }
 
 model Roles {
-  id                    Int             @id @default(autoincrement())
-  uid                   String          @unique
+  id                    Int              @id @default(autoincrement())
+  uid                   String           @unique
   username              String
-  isAdmin               Boolean         @default(true)
-  isVendor              Boolean         @default(true)
-  email                 String          @unique
+  isAdmin               Boolean          @default(true)
+  isVendor              Boolean          @default(true)
+  email                 String           @unique
   address               String
   age                   Int
   name                  String
@@ -340,8 +329,9 @@ model Roles {
   mobile                String
   document_tradelicense String
   document_other        String
-  created_at            DateTime        @default(now())
+  created_at            DateTime         @default(now())
   bookingResults        BookingResult[]
+  tours                 Tourstaticdata[]
 }
 
 model RayanaApi {
@@ -359,4 +349,51 @@ model Emailtemplate {
   id      Int    @id @default(autoincrement())
   subject String @db.LongText
   body    String @db.LongText
+}
+
+model ContactUs {
+  id           Int    @id @default(autoincrement())
+  Heading      String
+  Subheading   String
+  Address      String
+  mobilenumber String
+  Email        String
+  Heading2     String
+  Imagepath    String
+}
+
+model Footer {
+  id              Int    @id @default(autoincrement())
+  logourl         String
+  title1          String
+  paymentimage    String
+  copyright       String
+  socialimage1    String
+  socialimage2    String
+  socialimage3    String
+  socialimage4    String
+  socialimageurl1 String
+  socialimageurl2 String
+  socialimageurl3 String
+  socialimageurl4 String
+}
+
+model Experiences {
+  id        Int    @id @default(autoincrement())
+  heading   String
+  imagepath String
+}
+
+model FormSubmission {
+  id           Int    @id @default(autoincrement())
+  name         String
+  email        String
+  message      String
+  mobilenumber String
+}
+
+model TransferTypes {
+  id           Int    @unique @default(autoincrement())
+  transferName String
+  transferId   Int
 }

@@ -72,11 +72,29 @@ const AddTourUser = {
           cityTourTypeId: params.citytourtypeid,
           cityTourType: params.citytourtype,
           contractId: 300,
+          vendorUid: params.vendoruid,
+          isVendorTour: params.isvendortour,
           recommended: params.isrecommended,
           isPrivate: true,
           isSlot: params.isslot,
         },
       });
+      // need to be added in admin panel and
+      try {
+        const Tourprice = await prismaClient.TourPricing.create({
+          data: {
+            tourId: gtourId,
+            contractId: 300,
+            amount: params.amount,
+            adultPrice: params.adultprice,
+            childPrice: params.childprice,
+            infantPrice: params.infantprice,
+          },
+        });
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
 
       const databyid = await prismaClient.Tourstaticdatabyid.create({
         data: {
@@ -100,6 +118,7 @@ const AddTourUser = {
           usefulInformation: params.usefulinformation,
           childAge: params.childage,
           infantAge: params.infantage,
+          isVendorTour: params.isvendortour,
           infantCount: params.infantcount,
           onlyChild: params.isonlychild,
           startTime: params.starttime,
@@ -149,9 +168,10 @@ const AddTourUser = {
             (option.timeSlots || []).map(async (timeSlot) => {
               const gtimeSlotId = await this.generateUniqueTimeSlotId();
               const timeslotidstring = gtimeSlotId.toString();
+
               return prismaClient.TimeSlot.create({
                 data: {
-                  tourOptionId: createdTourOption.id,
+                  tourOptionId: createdTourOption.tourOptionId,
                   timeSlotId: timeslotidstring,
                   timeSlot: timeSlot.timeSlot,
                   available: timeSlot.available,

@@ -7,7 +7,7 @@ const staticOptioncontroller = {
       console.log(requestBody);
 
       const staticOptionData = await Touroption.fetchstaticData(requestBody);
-
+      console.log(staticOptionData);
       res.json(staticOptionData);
     } catch (error) {
       console.error("Error:", error);
