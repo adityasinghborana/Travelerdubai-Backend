@@ -16,6 +16,7 @@ const Bookingcontroller = require("../controller/bookingcontroller");
 const paymentController = require("../controller/stripecontroller");
 const imageController = require("../controller/imagecontroller");
 const uploadMiddleware = require("../middlewares/multerMiddleware");
+const deleteMiddleware = require("../middlewares/mutlerdeletemiddleware");
 const apiKeyConroller = require("../controller/apicontroller");
 const emailConroller = require("../controller/email_controller");
 const rolecontroller = require("../controller/rolecontroller");
@@ -73,7 +74,7 @@ router.put("/updatecart", cartcontroller.updateCartTourDetail); //for  user
 router.post("/cart", cartcontroller.getCart); //for user
 
 // bookings
-
+router.get("/allbookings", Bookingcontroller.getAllBookings);
 router.post("/bookings", Bookingcontroller.book);
 router.post(
   "/create-payment-intent",
@@ -108,6 +109,11 @@ router.post("/addtour", AddTourController.addTour);
 //add city
 router.put("/addcity", createcitycontroller.addCity);
 router.get("/library", BackgroudImageController.getAllImages);
+router.delete(
+  "/deletelibraryimage",
+  BackgroudImageController.deleteSliderImages
+);
+
 router.patch("/updatesliderimage", homepageController.updatebgimage);
 //staticpages
 //router.post("/submitform", Staticpage.PostFormSubmission);

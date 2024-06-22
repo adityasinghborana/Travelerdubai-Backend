@@ -39,9 +39,9 @@ model BookingDetail {
 model BookingResult {
   referenceNo    String          @id
   userId         String
-  roleId         Int?
+  roleId         String
   bookingDetails BookingDetail[]
-  role           Roles?          @relation(fields: [roleId], references: [id])
+  role           Roles?          @relation(fields: [roleId], references: [uid])
   user           User            @relation(fields: [userId], references: [uid])
 
   @@index([roleId], map: "BookingResult_roleId_fkey")
@@ -71,6 +71,7 @@ model CartTourDetail {
   transferId      Int
   pickup          String?
   adultRate       Float
+  roleId          String? //added role id to map it with the bookings by vendors 
   serviceTotal    Float
   cartId          Int
   tourOption      String
@@ -129,7 +130,7 @@ model Tourstaticdata {
   countryName               String
   cityId                    Int
   cityName                  String
-  tourName                  String
+  tourName                  String              @unique
   duration                  String
   imagePath                 String
   cityTourTypeId            String
@@ -180,6 +181,7 @@ model Tourstaticdatabyid {
   tourExclusion        String?
   TourId               Int            @unique
   cutOffhrs            Int?
+  vendorUid            String? // added this to map it to bookings and vendor 
   isVendorTour         Boolean        @default(false)
   tourOption           TourOption[]
   tourImages           TourImagess[]

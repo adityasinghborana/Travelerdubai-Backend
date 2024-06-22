@@ -32,7 +32,6 @@ const tourmodel = {
       },
       include: {
         tourImages: true,
-        
       },
     });
   },

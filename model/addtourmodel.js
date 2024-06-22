@@ -125,6 +125,7 @@ const AddTourUser = {
           meal: params.meal,
           googleMapUrl: params.googlemapurl,
           tourExclusion: params.tourexclusion,
+          vendorUid: params.vendoruid,
         },
       });
 

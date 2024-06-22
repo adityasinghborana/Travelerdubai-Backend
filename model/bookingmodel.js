@@ -69,6 +69,7 @@ const BookingModel = {
       throw error;
     }
   },
+
   async getAllBookings() {
     const bookings = await prisma.bookingDetail.findMany({
       include: {

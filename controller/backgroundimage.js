@@ -1,5 +1,6 @@
 const BackgroundImageModel = require("../model/backgroundimagemodel");
 const allimageService = require("../model/allimageservice");
+const deleteFile = require("../middlewares/mutlerdeletemiddleware");
 
 const BackgroudImageController = {
   getAllImages: async (req, res) => {
@@ -19,6 +20,28 @@ const BackgroudImageController = {
       res.json(images);
     } catch (error) {
       res.json(error);
+    }
+  },
+  async deleteSliderImages(req, res) {
+    //const url = "image-1718372178319.png";
+    //const url = req.params.url;
+    const url = req.body.url;
+    try {
+      // Delete file using deleteFile middleware
+      deleteFile(url);
+
+      // Delete corresponding database records (optional, if applicable)
+      const images = await BackgroundImageModel.deleteBackgroundImages(url);
+
+      res.json({
+        message: `Deleted file and corresponding database records for: ${url}`,
+      });
+    } catch (error) {
+      console.error("Error deleting slider images:", error);
+      res.status(500).json({
+        error: "Failed to delete slider images",
+        message: error.message,
+      });
     }
   },
 };
