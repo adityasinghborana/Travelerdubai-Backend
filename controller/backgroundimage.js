@@ -1,35 +1,22 @@
 const BackgroundImageModel = require("../model/backgroundimagemodel");
-const allimageService = require("../model/allimageservice");
 const deleteFile = require("../middlewares/mutlerdeletemiddleware");
 
 const BackgroudImageController = {
-  getAllImages: async (req, res) => {
+  async selectSliderimage(req, res) {
+    const path = req.body.url;
+
     try {
-      const images = await allimageService.listAllImages();
-      res.json(images);
+      const image = await BackgroundImageModel.setSliderImage(path);
+
+      return res.json(image);
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Unable to retrieve images", error: error.message });
-    }
-  },
-  async getSliderImages(req, res) {
-    // Changed parameter name from "res" to "req"
-    try {
-      const images = await BackgroundImageModel.getBackgroundImages(); // Added parentheses to call the function
-      res.json(images);
-    } catch (error) {
-      res.json(error);
+      console.error("Error setting image:", error);
+      res.status(500).json({ error: "Failed to set image" });
     }
   },
   async deleteSliderImages(req, res) {
-    //const url = "image-1718372178319.png";
-    //const url = req.params.url;
     const url = req.body.url;
     try {
-      // Delete file using deleteFile middleware
-      deleteFile(url);
-
       // Delete corresponding database records (optional, if applicable)
       const images = await BackgroundImageModel.deleteBackgroundImages(url);
 

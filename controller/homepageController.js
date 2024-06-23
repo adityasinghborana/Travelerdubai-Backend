@@ -66,17 +66,17 @@ const homeController = {
       res.status(500).json({ error: errorMessage });
     }
   },
-  async updatebgimage(req, res) {
-    try {
-      const value = req.body;
-      const result = await homepageModel.updateBackgroundimages(value); //TODO add homepage model function here
-      res.status(200).json(result);
-    } catch (error) {
-      console.error(error);
-      const errorMessage = error.message || "Internal server error";
-      res.status(500).json({ error: errorMessage });
-    }
-  },
+  // async updatebgimage(req, res) {
+  //   try {
+  //     const value = req.body;
+  //     const result = await homepageModel.updateBackgroundimages(value); //TODO add homepage model function here
+  //     res.status(200).json(result);
+  //   } catch (error) {
+  //     console.error(error);
+  //     const errorMessage = error.message || "Internal server error";
+  //     res.status(500).json({ error: errorMessage });
+  //   }
+  // },
 };
 
 module.exports = homeController;

@@ -16,13 +16,12 @@ const Bookingcontroller = require("../controller/bookingcontroller");
 const paymentController = require("../controller/stripecontroller");
 const imageController = require("../controller/imagecontroller");
 const uploadMiddleware = require("../middlewares/multerMiddleware");
-const deleteMiddleware = require("../middlewares/mutlerdeletemiddleware");
 const apiKeyConroller = require("../controller/apicontroller");
+const Bgimagecontroller = require("../controller/backgroundimage");
 const emailConroller = require("../controller/email_controller");
 const rolecontroller = require("../controller/rolecontroller");
 const tourtypescontroller = require("../controller/tourtypecontroller");
 const createcitycontroller = require("../controller/addcitycontroller");
-const BackgroudImageController = require("../controller/backgroundimage");
 const AddTourController = require("../controller/addtourcontroller");
 const Staticpage = require("../controller/staticpagescontroller");
 
@@ -35,9 +34,6 @@ router.put("/updateuser", userController.updateUser); // if you want change it t
 
 // Homepage Routes
 router.get("/homepage", homepageController.getAllData); //for admin and user
-router.get("/bgimage", homepageController.getbgimage); //for admin and user
-router.post("/uploadimage", homepageController.addbgimage); //for admin
-router.delete("/deleteimage", homepageController.deletebgimage); //for admin
 router.patch("/updatedata", homepageController.updateAllData); //for admin
 router.post("/addhomedata", homepageController.addAllData); //for admin
 
@@ -81,10 +77,6 @@ router.post(
   paymentController.handleCreatePaymentIntent
 ); // for user and admin
 
-// image uploads
-router.post("/upload", uploadMiddleware, imageController.uploadImage);
-router.get("/sliderimages", BackgroudImageController.getSliderImages);
-
 //apikey
 router.get("/apikey", apiKeyConroller.getRayanaApi);
 router.put("/updateapikey", apiKeyConroller.UpdateRayanaApi);
@@ -108,15 +100,9 @@ router.post("/addtour", AddTourController.addTour);
 
 //add city
 router.put("/addcity", createcitycontroller.addCity);
-router.get("/library", BackgroudImageController.getAllImages);
-router.delete(
-  "/deletelibraryimage",
-  BackgroudImageController.deleteSliderImages
-);
 
-router.patch("/updatesliderimage", homepageController.updatebgimage);
-//staticpages
-//router.post("/submitform", Staticpage.PostFormSubmission);
+//staticcontent
+router.post("/submitform", Staticpage.PostFormSubmission);
 router.get("/forms", Staticpage.getFormSubmisisionData);
 router.get("/contactusdata", Staticpage.getContactUsData);
 router.patch("/updatecontactusdata", Staticpage.updateContactUsData);
@@ -124,5 +110,18 @@ router.get("/experiencesdata", Staticpage.getExperiencesData);
 router.patch("/updateexperiencesdata", Staticpage.updateExperiencesData);
 router.get("/footerdata", Staticpage.getFooterData);
 router.patch("/updatefooterdata", Staticpage.updateFooterData);
+
+//images
+
+router.delete("/deletelibraryimage", imageController.deleteImage);
+router.post("/upload", uploadMiddleware, imageController.uploadImage);
+router.get("/library", imageController.getAllImages);
+router.get("/sliderimages", homepageController.getbgimage); //for admin and user
+router.post(
+  "/setsliderimage",
+
+  Bgimagecontroller.selectSliderimage
+); //for admin
+router.delete("/deleteimage", homepageController.deletebgimage);
 
 module.exports = router;

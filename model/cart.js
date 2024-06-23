@@ -108,6 +108,7 @@ const Cartmodel = {
         childRate: requestBody.childRate,
         serviceTotal: requestBody.serviceTotal,
         cartId: requestBody.cartId,
+        roleId: requestBody.vendoruid,
         isVendor: requestBody.isvendor, //TODO add the vendor so that booking api can run on ryanna and on our backend
       };
 

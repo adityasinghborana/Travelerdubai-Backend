@@ -3,18 +3,23 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const BackgroudImageModel = {
-  async getBackgroundImages() {
-    const images = await prisma.BackgroundImage.findMany({
-      where: {
-        isVisibleSlider: true,
-      },
-    });
-    console.log(images);
-    return images;
+  async setSliderImage(imageurl) {
+    try {
+      const imagess = await prisma.BackgroundImage.create({
+        data: {
+          url: imageurl,
+          isVisibleSlider: true,
+        },
+      });
+      console.log(imagess);
+      return { imagess };
+    } catch (error) {
+      console.log(error);
+    }
   },
   async deleteBackgroundImages(path) {
     try {
-      const images = await prisma.backgroundImage.deleteMany({
+      const images = await prisma.BackgroundImage.deleteMany({
         where: {
           url: path,
         },

@@ -47,6 +47,7 @@ const BookingModel = {
         TourDetails: flattenedTourDetails,
         passengers: passengersFromFrontend,
       };
+      console.log(bookingData);
 
       const bookingResponse = await axios.post(
         "https://sandbox.raynatours.com/api/Booking/bookings",

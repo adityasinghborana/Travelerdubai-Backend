@@ -97,17 +97,17 @@ const homeModel = {
     console.log(images);
     return images;
   },
-  async updateBackgroundimages(value) {
-    const images = await prisma.BackgroundImage.update({
-      where: {
-        id: value.id,
-      },
-      data: {
-        isVisibleSlider: value.isChecked,
-      },
-    });
-    console.log(images);
-    return images;
-  },
+  // async updateBackgroundimages(value) {
+  //   const images = await prisma.BackgroundImage.update({
+  //     where: {
+  //       id: value.id,
+  //     },
+  //     data: {
+  //       isVisibleSlider: value.isChecked,
+  //     },
+  //   });
+  //   console.log(images);
+  //   return images;
+  // },
 };
 module.exports = homeModel;
