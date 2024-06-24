@@ -29,15 +29,16 @@ model BookingDetail {
   serviceUniqueId  String
   serviceType      String
   confirmationNo   String?
-  bookingResultId  String
+  bookingResultId  Int
   createdAt        DateTime      @default(now())
-  bookingResult    BookingResult @relation(fields: [bookingResultId], references: [referenceNo])
+  bookingResult    BookingResult @relation(fields: [bookingResultId], references: [id])
 
   @@index([bookingResultId], map: "BookingDetail_bookingResultId_fkey")
 }
 
 model BookingResult {
-  referenceNo    String          @id
+  id             Int             @id @default(autoincrement())
+  referenceNo    String
   userId         String          @db.VarChar(255)
   roleId         String?         @db.VarChar(255)
   status         String          @default("Approved") @db.VarChar(255)

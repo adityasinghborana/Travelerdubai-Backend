@@ -87,7 +87,7 @@ const Touroption = {
               childPrice: price.childPrice,
               infantPrice: price.infantPrice,
               finalAmount: finalPrice,
-              start,
+              startTime: "",
             });
 
             // Sharing Transfers
@@ -101,6 +101,7 @@ const Touroption = {
                 childPrice: price.childPrice,
                 infantPrice: price.infantPrice,
                 finalAmount: finalPrice,
+                startTime: "",
               });
             }
 
@@ -115,6 +116,7 @@ const Touroption = {
                 childPrice: price.childPrice,
                 infantPrice: price.infantPrice,
                 finalAmount: finalPrice,
+                startTime: "",
               });
             }
 
@@ -129,6 +131,7 @@ const Touroption = {
                 childPrice: price.childPrice,
                 infantPrice: price.infantPrice,
                 finalAmount: finalPrice,
+                startTime: "",
               });
             }
 
@@ -143,6 +146,7 @@ const Touroption = {
                 childPrice: price.childPrice,
                 infantPrice: price.infantPrice,
                 finalAmount: finalPrice,
+                startTime: "",
               });
             }
 

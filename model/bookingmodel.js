@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { PrismaClient, Prisma } = require("@prisma/client");
+const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
@@ -15,10 +15,7 @@ const BookingModel = {
 
         // Check if randomid is not present in CartTourDetail
         const existingRecord = await prisma.cartTourDetail.findUnique({
-          where: {
-            id: randomid,
-            serviceUniqueId: randomid,
-          },
+          where: { id: randomid },
         });
 
         if (!existingRecord) {
@@ -31,40 +28,96 @@ const BookingModel = {
         where: { cartId: cartId },
       });
 
-      const tourDetailsArray = Cart.map((cart) => cart);
-      // Extract relevant data from the fetched cartDetails
-      console.log(tourDetailsArray);
+      // Separate the Cart items based on whether roleId is null or not
+      const toursWithNullrole = Cart.filter((cart) => !cart.roleId);
+      const toursWithrole = Cart.filter((cart) => cart.roleId);
 
-      // If you want to flatten the array to have all TourDetails in a single array, you can use flat()
-      const flattenedTourDetails = tourDetailsArray.flat();
-      console.log(flattenedTourDetails);
-      flattenedTourDetails.forEach((tourDetail) => {
-        tourDetail.pickup = pickup;
-      });
-
-      const bookingData = {
+      // Create booking data for tours with null roleId
+      const nullroleBookingData = {
         uniqueNo: randomid,
-        TourDetails: flattenedTourDetails,
+        TourDetails: toursWithNullrole.map((cart) => ({
+          ...cart,
+          pickup: pickup,
+        })),
         passengers: passengersFromFrontend,
       };
-      console.log(bookingData);
 
-      const bookingResponse = await axios.post(
-        "https://sandbox.raynatours.com/api/Booking/bookings",
-        bookingData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // Make booking API call for tours with null roleId if there are any
+      let nullroleBookingResponse;
+      if (toursWithNullrole.length > 0) {
+        nullroleBookingResponse = await axios.post(
+          "https://sandbox.raynatours.com/api/Booking/bookings",
+          nullroleBookingData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-      // Log the response data if needed
-      console.log("Booking API Response:", bookingResponse.data);
-      await saveBookingDetails(bookingResponse.data.result, uid);
+        // Log the response data if needed
+        console.log(
+          "Null role Booking API Response:",
+          nullroleBookingResponse.data
+        );
+        await saveBookingDetails(nullroleBookingResponse.data.result, uid);
+      }
+
+      // Create booking data for tours with non-null roleId
+      const roleBookingData = {
+        uniqueNo: randomid,
+        TourDetails: toursWithrole.map((cart) => ({
+          ...cart,
+          pickup: pickup,
+        })),
+        passengers: passengersFromFrontend,
+      };
+
+      // Ensure bookingResult exists before creating BookingDetails
+      const bookingResult = await prisma.bookingResult.create({
+        data: {
+          referenceNo: randomid.toString(),
+          userId: uid,
+        },
+      });
+
+      // Log the created bookingResult
+      console.log("Created bookingResult:", bookingResult);
+
+      // Make booking API call for tours with non-null roleId if there are any
+      let roleBookingResponse;
+      if (toursWithrole.length > 0) {
+        const bookingDetailsData = toursWithrole.map((tour, index) => ({
+          status: "Pending",
+          bookingId: randomid * 1000 + index, // Generate unique bookingId
+          downloadRequired: false,
+          serviceUniqueId: "td" + tour.serviceUniqueId,
+          serviceType: "Tour",
+          confirmationNo: null,
+          bookingResultId: bookingResult.id, // Use the created bookingResult ID
+        }));
+
+        // Log the data to be inserted
+        console.log("BookingDetailsData:", bookingDetailsData);
+
+        roleBookingResponse = await prisma.bookingDetail.createMany({
+          data: bookingDetailsData,
+        });
+
+        // Log the response data if needed
+        console.log("Role Booking Database Response:", roleBookingResponse);
+        await saveBookingDetails(
+          { details: bookingDetailsData, referenceNo: randomid.toString() },
+          uid
+        );
+      }
+
       // Return the response data
-      return bookingResponse.data;
+      return {
+        data: nullroleBookingResponse.data,
+        vendorbookings: roleBookingResponse.referenceNo,
+      };
     } catch (error) {
       console.error("Error:", error);
       throw error;
@@ -79,6 +132,7 @@ const BookingModel = {
     });
     return bookings;
   },
+
   async getBookingResultsByUser(userId) {
     try {
       const bookingResults = await prisma.bookingResult.findMany({
@@ -120,9 +174,7 @@ async function saveBookingDetails(responseData, userId) {
           serviceUniqueId: detail.serviceUniqueId,
           serviceType: detail.servicetype,
           confirmationNo: detail.confirmationNo,
-          bookingResult: {
-            connect: { referenceNo: bookingResult.referenceNo },
-          },
+          bookingResultId: bookingResult.id,
         },
       });
     }
