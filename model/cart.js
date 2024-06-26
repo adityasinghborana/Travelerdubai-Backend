@@ -149,6 +149,48 @@ const Cartmodel = {
       throw error;
     }
   },
+
+  async deleteCartdetail(cartid) {
+    try {
+      const Cart = await prisma.CartTourDetail.delete({
+        where: { id: cartid },
+      });
+      // updating cart total amount
+      const cartTourDetails = await prisma.cartTourDetail.findMany({
+        where: {
+          cartId: cartid,
+        },
+      });
+
+      // Update the Cart model with the calculated total amount
+      const Price = await prisma.cart.findUnique({
+        where: {
+          id: Cart.cartId,
+        },
+      });
+      console.log(Price.totalamount);
+      const updatedCart = await prisma.cart.update({
+        where: {
+          id: Cart.cartId,
+        },
+        data: {
+          totalamount: Price.totalamount - Cart.serviceTotal,
+        },
+      });
+      console.log("hello");
+      console.log(updatedCart);
+      console.log("hello");
+
+      if (!Cart) {
+        throw new Error("Cart not found.");
+      }
+      return Cart;
+    } catch (error) {
+      throw new Error(`Error deleting cart: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
+    }
+  },
 };
 
 module.exports = Cartmodel;

@@ -68,6 +68,7 @@ router.post("/timeslots", TimeSlotcontroller.fetchtimeslots);
 router.post("/createcart", cartcontroller.createCart); //for  user
 router.put("/updatecart", cartcontroller.updateCartTourDetail); //for  user
 router.post("/cart", cartcontroller.getCart); //for user
+router.delete("/deletecartitem", cartcontroller.deleteCartTourDetail); //for user
 
 // bookings
 router.get("/allbookings", Bookingcontroller.getAllBookings);

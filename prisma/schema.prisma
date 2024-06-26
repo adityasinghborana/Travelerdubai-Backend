@@ -27,7 +27,7 @@ model BookingDetail {
   bookingId        Int
   downloadRequired Boolean
   serviceUniqueId  String
-  serviceType      String
+  servicetype      String
   confirmationNo   String?
   bookingResultId  Int
   createdAt        DateTime      @default(now())
@@ -181,7 +181,7 @@ model Tourstaticdatabyid {
   googleMapUrl         String?
   tourExclusion        String?
   TourId               Int            @unique
-  cutOffhrs            Int?
+  cutOffhrs            Int?           @default(96)
   vendorUid            String? // added this to map it to bookings and vendor 
   isVendorTour         Boolean        @default(false)
   tourOption           TourOption[]
@@ -293,25 +293,81 @@ model Aboutus {
 }
 
 model Eventdata {
-  eventId                Int     @id @default(autoincrement())
-  isvisible              Boolean @default(true)
-  isvisibleHome          Boolean @default(false)
-  cityId                 Int
-  eventName              String
-  reviewCount            Int
-  rating                 Float
-  duration               String
-  imagePath              String
-  cityeventTypeId        String
-  cityeventType          String
-  eventShortDescription  String  @db.LongText
-  cancellationPolicyName String  @db.LongText
-  isSlot                 Boolean
-  onlyChild              Boolean
-  recommended            Boolean
-  city                   City    @relation(fields: [cityId], references: [CityId])
+  id            Int           @id @default(autoincrement())
+  isVisible     Boolean       @default(true)
+  isVisibleHome Boolean       @default(false)
+  cityId        Int
+  eventName     String
+  duration      String
+  imagePath     String
+  eventType     String
+  isSlot        Boolean
+  onlyChild     Boolean
+  recommended   Boolean
+  eventdetailid Int?          @unique
+  eventdetail   EventDetail[]
+  city          City?         @relation(fields: [cityId], references: [id])
 
   @@index([cityId], map: "Eventdata_cityId_fkey")
+}
+
+model EventDetail {
+  id              Int           @id @default(autoincrement())
+  eventName       String
+  eventdetailid   Int
+  description     String        @db.LongText
+  date            DateTime
+  location        String
+  googlemapurl    String
+  minage          Int
+  moreinfo        String        @db.LongText
+  ticketinfo      String        @db.LongText
+  artistname      String
+  artistimage     String
+  lastbookingtime DateTime
+  eventSelling    Boolean
+  ischildallowed  Boolean
+  isadultallowed  Boolean
+  isinfantallowed Boolean
+  duration        String
+  eventoptions    EventOption[]
+  images          EventImages[]
+  eventdata       Eventdata     @relation(fields: [eventdetailid], references: [id])
+}
+
+model EventOption {
+  id                Int              @id @default(autoincrement())
+  eventId           Int
+  optionname        String
+  adultprice        Float
+  childprice        Float
+  infantprice       Float
+  optiondescription String           @db.LongText
+  available         Int
+  timeslots         EventTimeSlots[]
+  eventdetail       EventDetail      @relation(fields: [eventId], references: [id])
+}
+
+model EventTimeSlots {
+  id            Int         @id @unique @default(autoincrement())
+  eventOptionId Int
+  timeSlotId    String
+  timeSlot      String
+  available     Int
+  adultPrice    Float
+  childPrice    Float
+  eventoption   EventOption @relation(fields: [eventOptionId], references: [id])
+}
+
+model EventImages {
+  id            Int         @id @default(autoincrement())
+  eventDetailId Int
+  eventdetail   EventDetail @relation(fields: [eventDetailId], references: [id])
+}
+
+model EventTypes {
+  id        Int    @id @default(autoincrement())
+  eventtype String @unique
 }
 
 model Roles {
@@ -337,8 +393,9 @@ model Roles {
 }
 
 model RayanaApi {
-  id     Int    @id @default(autoincrement())
-  apikey String @db.LongText
+  id      Int    @id @default(autoincrement())
+  apikey  String @db.LongText
+  baseurl String
 }
 
 model StripeApi {

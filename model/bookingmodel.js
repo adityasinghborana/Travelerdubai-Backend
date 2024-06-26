@@ -87,13 +87,14 @@ const BookingModel = {
 
       // Make booking API call for tours with non-null roleId if there are any
       let roleBookingResponse;
+
       if (toursWithrole.length > 0) {
         const bookingDetailsData = toursWithrole.map((tour, index) => ({
           status: "Pending",
           bookingId: randomid * 1000 + index, // Generate unique bookingId
           downloadRequired: false,
           serviceUniqueId: "td" + tour.serviceUniqueId,
-          serviceType: "Tour",
+          servicetype: "Tour",
           confirmationNo: null,
           bookingResultId: bookingResult.id, // Use the created bookingResult ID
         }));
@@ -101,23 +102,42 @@ const BookingModel = {
         // Log the data to be inserted
         console.log("BookingDetailsData:", bookingDetailsData);
 
-        roleBookingResponse = await prisma.bookingDetail.createMany({
-          data: bookingDetailsData,
-        });
+        try {
+          roleBookingResponse = await prisma.bookingDetail.createMany({
+            data: bookingDetailsData,
+          });
 
-        // Log the response data if needed
-        console.log("Role Booking Database Response:", roleBookingResponse);
-        await saveBookingDetails(
-          { details: bookingDetailsData, referenceNo: randomid.toString() },
-          uid
-        );
+          // Log the response data if needed
+          console.log("Role Booking Database Response:", roleBookingResponse);
+
+          await saveBookingDetails(
+            { details: bookingDetailsData, referenceNo: randomid.toString() },
+            uid
+          );
+
+          // Return the response data
+          return {
+            Data: nullroleBookingResponse.data,
+            vendorbookings: {
+              status: "Success",
+              count: roleBookingResponse.count,
+              bookingDetails: bookingDetailsData,
+            },
+          };
+        } catch (error) {
+          console.error("Error creating booking details:", error);
+          // Return an error response or handle the error as needed
+          return {
+            error: "Failed to create booking details.",
+          };
+        }
+      } else {
+        return {
+          data: {
+            status: "No tours available for booking.",
+          },
+        };
       }
-
-      // Return the response data
-      return {
-        data: nullroleBookingResponse.data,
-        vendorbookings: roleBookingResponse.referenceNo,
-      };
     } catch (error) {
       console.error("Error:", error);
       throw error;
@@ -172,7 +192,7 @@ async function saveBookingDetails(responseData, userId) {
           bookingId: detail.bookingId,
           downloadRequired: detail.downloadRequired,
           serviceUniqueId: detail.serviceUniqueId,
-          serviceType: detail.servicetype,
+          servicetype: detail.servicetype,
           confirmationNo: detail.confirmationNo,
           bookingResultId: bookingResult.id,
         },

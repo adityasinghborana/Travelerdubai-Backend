@@ -14,7 +14,7 @@ const RolesModel = {
   },
 
   async FetchAllVendors() {
-    await prisma.roles.findMany();
+    return await prisma.Roles.findMany();
   },
 
   async vendorSignup(vendordata) {
