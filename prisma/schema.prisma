@@ -414,6 +414,7 @@ model ContactUs {
   id           Int    @id @default(autoincrement())
   Heading      String
   Subheading   String
+  Subheading2  String
   Address      String
   mobilenumber String
   Email        String

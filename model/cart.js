@@ -111,7 +111,7 @@ const Cartmodel = {
         roleId: requestBody.vendoruid,
         isVendor: requestBody.isvendor, //TODO add the vendor so that booking api can run on ryanna and on our backend
       };
-
+      console.log(requestBody.cartId);
       // Create a new CartTourDetail with the updated data
       const createdCartTourDetail = await prisma.cartTourDetail.create({
         data: updatedData,

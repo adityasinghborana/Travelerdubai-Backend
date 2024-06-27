@@ -32,6 +32,10 @@ const BookingModel = {
       const toursWithNullrole = Cart.filter((cart) => !cart.roleId);
       const toursWithrole = Cart.filter((cart) => cart.roleId);
 
+      // Log the separated tours
+      console.log("Tours with null roleId:", toursWithNullrole);
+      console.log("Tours with roleId:", toursWithrole);
+
       // Create booking data for tours with null roleId
       const nullroleBookingData = {
         uniqueNo: randomid,
@@ -64,31 +68,30 @@ const BookingModel = {
         await saveBookingDetails(nullroleBookingResponse.data.result, uid);
       }
 
-      // Create booking data for tours with non-null roleId
-      const roleBookingData = {
-        uniqueNo: randomid,
-        TourDetails: toursWithrole.map((cart) => ({
-          ...cart,
-          pickup: pickup,
-        })),
-        passengers: passengersFromFrontend,
-      };
-
-      // Ensure bookingResult exists before creating BookingDetails
-      const bookingResult = await prisma.bookingResult.create({
-        data: {
-          referenceNo: randomid.toString(),
-          userId: uid,
-        },
-      });
-
-      // Log the created bookingResult
-      console.log("Created bookingResult:", bookingResult);
-
-      // Make booking API call for tours with non-null roleId if there are any
-      let roleBookingResponse;
-
+      // Handle tours with non-null roleId
       if (toursWithrole.length > 0) {
+        // Create booking data for tours with non-null roleId
+        const roleBookingData = {
+          uniqueNo: randomid,
+          TourDetails: toursWithrole.map((cart) => ({
+            ...cart,
+            pickup: pickup,
+          })),
+          passengers: passengersFromFrontend,
+        };
+
+        // Ensure bookingResult exists before creating BookingDetails
+        const bookingResult = await prisma.bookingResult.create({
+          data: {
+            referenceNo: randomid.toString(),
+            userId: uid,
+          },
+        });
+
+        // Log the created bookingResult
+        console.log("Created bookingResult:", bookingResult);
+
+        // Make booking API call for tours with non-null roleId if there are any
         const bookingDetailsData = toursWithrole.map((tour, index) => ({
           status: "Pending",
           bookingId: randomid * 1000 + index, // Generate unique bookingId
@@ -103,7 +106,7 @@ const BookingModel = {
         console.log("BookingDetailsData:", bookingDetailsData);
 
         try {
-          roleBookingResponse = await prisma.bookingDetail.createMany({
+          const roleBookingResponse = await prisma.bookingDetail.createMany({
             data: bookingDetailsData,
           });
 
@@ -117,9 +120,9 @@ const BookingModel = {
 
           // Return the response data
           return {
-            Data: nullroleBookingResponse.data,
+            Data: nullroleBookingResponse?.data,
             vendorbookings: {
-              status: "Success",
+              status: 200,
               count: roleBookingResponse.count,
               bookingDetails: bookingDetailsData,
             },
@@ -133,8 +136,11 @@ const BookingModel = {
         }
       } else {
         return {
-          data: {
-            status: "No tours available for booking.",
+          Data: nullroleBookingResponse?.data,
+          vendorbookings: {
+            status: 200,
+            count: 0,
+            bookingDetails: [],
           },
         };
       }

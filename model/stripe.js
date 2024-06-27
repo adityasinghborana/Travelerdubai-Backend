@@ -53,9 +53,10 @@ async function createPaymentIntent(userId) {
 
     // Create payment intent
     const paymentIntent = await stripeInstance.paymentIntents.create({
-      amount: 20 * 100, // Convert to cents
-      currency: "USD",
+      amount: amount * 100, // Convert to fils
+      currency: "AED",
     });
+    console.log(paymentIntent);
 
     return paymentIntent.client_secret;
   } catch (error) {
