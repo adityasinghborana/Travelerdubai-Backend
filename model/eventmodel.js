@@ -12,7 +12,23 @@ const eventmodel = {
   },
 
   async getallevents() {
-    return await prisma.Eventdata.findMany();
+    return await prisma.Eventdata.findMany({
+      include: {
+        eventdetail: true,
+      },
+    });
+  },
+  async getevent(params) {
+    return await prisma.EventDetail.findUnique({
+      where: {
+        id: params.id,
+      },
+
+      include: {
+        eventoptions: true,
+        images: true,
+      },
+    });
   },
 };
 

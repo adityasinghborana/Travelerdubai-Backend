@@ -303,6 +303,8 @@ model Eventdata {
   eventType     String
   isSlot        Boolean
   onlyChild     Boolean
+  vendorUid     String?
+  vendor        Roles?        @relation(fields: [vendorUid], references: [uid])
   recommended   Boolean
   eventdetailid Int?          @unique
   eventdetail   EventDetail[]
@@ -330,9 +332,10 @@ model EventDetail {
   isadultallowed  Boolean
   isinfantallowed Boolean
   duration        String
+  vendorUid       String?
   eventoptions    EventOption[]
   images          EventImages[]
-  eventdata       Eventdata     @relation(fields: [eventdetailid], references: [id])
+  eventdata       Eventdata?    @relation(fields: [eventdetailid], references: [id])
 }
 
 model EventOption {
@@ -345,13 +348,12 @@ model EventOption {
   optiondescription String           @db.LongText
   available         Int
   timeslots         EventTimeSlots[]
-  eventdetail       EventDetail      @relation(fields: [eventId], references: [id])
+  eventdetail       EventDetail?     @relation(fields: [eventId], references: [id])
 }
 
 model EventTimeSlots {
   id            Int         @id @unique @default(autoincrement())
   eventOptionId Int
-  timeSlotId    String
   timeSlot      String
   available     Int
   adultPrice    Float
@@ -361,6 +363,7 @@ model EventTimeSlots {
 
 model EventImages {
   id            Int         @id @default(autoincrement())
+  imagePath     String
   eventDetailId Int
   eventdetail   EventDetail @relation(fields: [eventDetailId], references: [id])
 }
@@ -390,6 +393,7 @@ model Roles {
   created_at            DateTime         @default(now())
   tours                 Tourstaticdata[]
   BookingResult         BookingResult[]
+  Eventdata             Eventdata[]
 }
 
 model RayanaApi {

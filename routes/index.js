@@ -24,6 +24,7 @@ const tourtypescontroller = require("../controller/tourtypecontroller");
 const createcitycontroller = require("../controller/addcitycontroller");
 const AddTourController = require("../controller/addtourcontroller");
 const Staticpage = require("../controller/staticpagescontroller");
+const addEventController = require("../controller/addeventcontroller");
 
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
@@ -58,6 +59,8 @@ router.get("/fetchprice", priceController.fetchprice); //for admin and user
 
 router.get("/events", eventController.getallevents);
 router.get("/eventtypes", eventController.getalleventtype);
+router.get("/eventtypes", eventController.getevent);
+router.post("/event", eventController.getevent);
 
 //touroption
 router.post("/touroptions", Optioncontroller.fetchoptions);
@@ -98,6 +101,7 @@ router.post("/signupvendor", rolecontroller.signupVendor);
 // create tourtypes
 router.post("/addtourtypes", tourtypescontroller.tourtype);
 router.post("/addtour", AddTourController.addTour);
+router.post("/addevent", addEventController.addEvent);
 
 //add city
 router.put("/addcity", createcitycontroller.addCity);
