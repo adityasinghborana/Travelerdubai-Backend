@@ -59,7 +59,6 @@ router.get("/fetchprice", priceController.fetchprice); //for admin and user
 
 router.get("/events", eventController.getallevents);
 router.get("/eventtypes", eventController.getalleventtype);
-router.get("/eventtypes", eventController.getevent);
 router.post("/event", eventController.getevent);
 
 //touroption
@@ -93,6 +92,7 @@ router.get("/email", emailConroller.getEmail);
 router.patch("/update-email", emailConroller.updateEmail);
 // get bookings
 router.post("/userbookings", Bookingcontroller.getUserBookings);
+router.post("/bookingdetail", Bookingcontroller.getBookingDetails);
 //vendors
 router.get("/allvendors", rolecontroller.fetchAllVendor);
 router.post("/vendor", rolecontroller.fetchVendor);

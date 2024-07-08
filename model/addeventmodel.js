@@ -104,6 +104,7 @@ const AddEventModel = {
           onlyChild,
           vendorUid,
           recommended,
+          vendorUid,
         },
       });
 

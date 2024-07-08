@@ -3,11 +3,7 @@ const prisma = new PrismaClient();
 
 const eventmodel = {
   async CityeventTypes() {
-    const uniqueCityeventTypes = await prisma.Eventdata.findMany({
-      select: {
-        cityeventType: true,
-      },
-    });
+    const uniqueCityeventTypes = await prisma.EventTypes.findMany();
     return uniqueCityeventTypes;
   },
 

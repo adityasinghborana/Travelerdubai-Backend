@@ -30,7 +30,9 @@ const BookingModel = {
 
       // Separate the Cart items based on whether roleId is null or not
       const toursWithNullrole = Cart.filter((cart) => !cart.roleId);
-      const toursWithrole = Cart.filter((cart) => cart.roleId);
+      const toursWithrole = Cart.filter(
+        (cart, passengersFromFrontend) => cart.roleId
+      );
 
       // Log the separated tours
       console.log("Tours with null roleId:", toursWithNullrole);
@@ -92,21 +94,41 @@ const BookingModel = {
         console.log("Created bookingResult:", bookingResult);
 
         // Make booking API call for tours with non-null roleId if there are any
-        const bookingDetailsData = toursWithrole.map((tour, index) => ({
-          status: "Pending",
-          bookingId: randomid * 1000 + index, // Generate unique bookingId
-          downloadRequired: false,
-          serviceUniqueId: "td" + tour.serviceUniqueId,
-          servicetype: "Tour",
-          confirmationNo: null,
-          bookingResultId: bookingResult.id, // Use the created bookingResult ID
-        }));
+        const bookingDetailsData = toursWithrole.map(
+          (tour, index, passengersFromFrontend) => ({
+            prefix: passengersFromFrontend.prefix,
+            firstName: passengersFromFrontend.firstName,
+            lastName: passengersFromFrontend.lastName,
+            email: passengersFromFrontend.email,
+            mobile: passengersFromFrontend.mobile,
+            nationality: passengersFromFrontend.nationality,
+            message: passengersFromFrontend.message,
+            nationality: passengersFromFrontend.nationality,
+            adult: tour.adult,
+            child: tour.child,
+            pickup: tour.pickup,
+            infant: tour.infant,
+            tourDate: tour.tourDate,
+            tourOption: tour.tourOption,
+            timeSlotId: tour.timeSlotId,
+            startTime: tour.startTime,
+            serviceTotal: tour.serviceTotal,
+            status: "Pending",
+            bookingId: randomid * 1000 + index, // Generate unique bookingId
+            downloadRequired: false,
+            serviceUniqueId: "td" + tour.serviceUniqueId,
+            servicetype: "Tour",
+            confirmationNo: null,
+            bookingResultId: bookingResult.id, // Use the created bookingResult ID
+          })
+        );
 
         // Log the data to be inserted
         console.log("BookingDetailsData:", bookingDetailsData);
 
         try {
           const roleBookingResponse = await prisma.bookingDetail.createMany({
+            skipDuplicates: true,
             data: bookingDetailsData,
           });
 
@@ -149,7 +171,7 @@ const BookingModel = {
       throw error;
     }
   },
-
+  /// other apis models
   async getAllBookings() {
     const bookings = await prisma.bookingDetail.findMany({
       include: {
@@ -157,6 +179,20 @@ const BookingModel = {
       },
     });
     return bookings;
+  },
+
+  async getBookingsDetails(bookingid) {
+    try {
+      const bookings = await prisma.bookingDetail.findUnique({
+        where: {
+          bookingId: bookingid,
+        },
+      });
+      return bookings;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   },
 
   async getBookingResultsByUser(userId) {

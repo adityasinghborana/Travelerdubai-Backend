@@ -31,6 +31,16 @@ const Bookingcontroller = {
       console.error(error);
     }
   },
+  async getBookingDetails(req, res) {
+    const id = req.body;
+    console.log(id, "hello");
+    try {
+      const bookingDetails = await BookingModel.getBookingsDetails(req.body.id);
+      res.json(bookingDetails);
+    } catch (error) {
+      console.error(error);
+    }
+  },
   async getUserBookings(req, res) {
     try {
       const user = req.body;

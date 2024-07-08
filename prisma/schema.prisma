@@ -24,10 +24,29 @@ model User {
 model BookingDetail {
   id               Int           @id @default(autoincrement())
   status           String
-  bookingId        Int
+  bookingId        Int           @unique
   downloadRequired Boolean
   serviceUniqueId  String
   servicetype      String
+  prefix           String?
+  firstName        String?
+  lastName         String?
+  email            String?
+  mobile           String?
+  nationality      String?
+  message          String?
+  adult            Int?
+  child            Int?
+  infant           Int?
+  tourDate         String?
+  timeSlotId       Int?
+  startTime        String?
+  pickup           String?
+  adultRate        Float?
+  serviceTotal     Float?
+  tourOption       String?
+  tourname         String?
+  childRate        Float?
   confirmationNo   String?
   bookingResultId  Int
   createdAt        DateTime      @default(now())
@@ -38,7 +57,7 @@ model BookingDetail {
 
 model BookingResult {
   id             Int             @id @default(autoincrement())
-  referenceNo    String
+  referenceNo    String          @unique
   userId         String          @db.VarChar(255)
   roleId         String?         @db.VarChar(255)
   status         String          @default("Approved") @db.VarChar(255)
@@ -308,7 +327,7 @@ model Eventdata {
   recommended   Boolean
   eventdetailid Int?          @unique
   eventdetail   EventDetail[]
-  city          City?         @relation(fields: [cityId], references: [id])
+  city          City?         @relation(fields: [cityId], references: [CityId], onDelete: Cascade)
 
   @@index([cityId], map: "Eventdata_cityId_fkey")
 }
@@ -321,7 +340,7 @@ model EventDetail {
   date            DateTime
   location        String
   googlemapurl    String
-  minage          Int
+  minage          String
   moreinfo        String        @db.LongText
   ticketinfo      String        @db.LongText
   artistname      String
@@ -335,37 +354,37 @@ model EventDetail {
   vendorUid       String?
   eventoptions    EventOption[]
   images          EventImages[]
-  eventdata       Eventdata?    @relation(fields: [eventdetailid], references: [id])
+  eventdata       Eventdata?    @relation(fields: [eventdetailid], references: [id], onDelete: Cascade)
 }
 
 model EventOption {
   id                Int              @id @default(autoincrement())
   eventId           Int
   optionname        String
-  adultprice        Float
-  childprice        Float
-  infantprice       Float
+  adultprice        String
+  childprice        String
+  infantprice       String
   optiondescription String           @db.LongText
-  available         Int
+  available         String
   timeslots         EventTimeSlots[]
-  eventdetail       EventDetail?     @relation(fields: [eventId], references: [id])
+  eventdetail       EventDetail?     @relation(fields: [eventId], references: [id], onDelete: Cascade)
 }
 
 model EventTimeSlots {
   id            Int         @id @unique @default(autoincrement())
   eventOptionId Int
   timeSlot      String
-  available     Int
-  adultPrice    Float
-  childPrice    Float
-  eventoption   EventOption @relation(fields: [eventOptionId], references: [id])
+  available     String
+  adultPrice    String
+  childPrice    String
+  eventoption   EventOption @relation(fields: [eventOptionId], references: [id], onDelete: Cascade)
 }
 
 model EventImages {
   id            Int         @id @default(autoincrement())
   imagePath     String
   eventDetailId Int
-  eventdetail   EventDetail @relation(fields: [eventDetailId], references: [id])
+  eventdetail   EventDetail @relation(fields: [eventDetailId], references: [id], onDelete: Cascade)
 }
 
 model EventTypes {
