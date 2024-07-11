@@ -25,6 +25,7 @@ const createcitycontroller = require("../controller/addcitycontroller");
 const AddTourController = require("../controller/addtourcontroller");
 const Staticpage = require("../controller/staticpagescontroller");
 const addEventController = require("../controller/addeventcontroller");
+const couponsController = require("../controller/couponcontroller");
 
 // User Routes
 router.get("/users", userController.getAllUsers); //for admin
@@ -128,5 +129,8 @@ router.post(
   Bgimagecontroller.selectSliderimage
 ); //for admin
 router.delete("/deleteimage", homepageController.deletebgimage);
+router.get("/coupons", couponsController.getCoupons);
+router.post("/createcoupons", couponsController.createCoupons);
+router.delete("/deletecoupon", couponsController.deleteCoupons);
 
 module.exports = router;

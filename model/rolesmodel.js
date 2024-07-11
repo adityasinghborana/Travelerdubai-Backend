@@ -27,6 +27,7 @@ const RolesModel = {
           isVendor: vendordata.isVendor,
           email: vendordata.email,
           address: vendordata.address,
+          isApproved: false,
           age: vendordata.age,
           name: vendordata.name,
           license_number: vendordata.license_number,
@@ -36,6 +37,8 @@ const RolesModel = {
           mobile: vendordata.mobile,
           document_tradelicense: vendordata.document_tradelicense,
           document_other: vendordata.document_other,
+          vatDocument: vendordata.document_vat,
+          bankDocument: vendordata.document_bank,
           created_at: new Date(), // You can omit this if you want to use the default value
         },
       });

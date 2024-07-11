@@ -169,6 +169,8 @@ model Tourstaticdata {
   city                      City                @relation(fields: [cityId], references: [CityId], onDelete: Cascade)
   tourdetails               Tourstaticdatabyid?
 
+  coupons Coupon[] @relation("Coupon")
+
   @@index([cityId], map: "Tourstaticdata_cityId_fkey")
 }
 
@@ -270,9 +272,14 @@ model OperationDay {
 }
 
 model Coupon {
-  id       Int    @id @default(autoincrement())
+  id       Int             @id @default(autoincrement())
   name     String
   discount Float
+  type     String
+  eventId  Int?
+  event    Eventdata?      @relation("Coupon", fields: [eventId], references: [id], onDelete: Cascade)
+  tourId   Int?
+  tour     Tourstaticdata? @relation("Coupon", fields: [tourId], references: [id])
 }
 
 model Homepage {
@@ -328,6 +335,7 @@ model Eventdata {
   eventdetailid Int?          @unique
   eventdetail   EventDetail[]
   city          City?         @relation(fields: [cityId], references: [CityId], onDelete: Cascade)
+  coupons       Coupon[]      @relation("Coupon")
 
   @@index([cityId], map: "Eventdata_cityId_fkey")
 }
@@ -403,10 +411,13 @@ model Roles {
   age                   Int
   name                  String
   license_number        String
+  isApproved            Boolean          @default(false)
   country               String
   city                  String
   services_description  String
   mobile                String
+  vatDocument           String?
+  bankDocument          String?
   document_tradelicense String
   document_other        String
   created_at            DateTime         @default(now())

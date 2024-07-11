@@ -198,6 +198,13 @@ const BookingModel = {
         where: {
           bookingId: bookingid,
         },
+        include: {
+          bookingResult: {
+            include: {
+              user: true,
+            },
+          },
+        },
       });
       return bookings;
     } catch (error) {
