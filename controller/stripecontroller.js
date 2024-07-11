@@ -1,4 +1,4 @@
-const paymentModel = require('../model/stripe');
+const paymentModel = require("../model/stripe");
 
 async function handleCreatePaymentIntent(req, res) {
   try {
@@ -8,7 +8,7 @@ async function handleCreatePaymentIntent(req, res) {
     res.json({ clientSecret });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).send({ error: "Internal Server Error" });
   }
 }
 

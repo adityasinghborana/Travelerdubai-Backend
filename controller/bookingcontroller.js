@@ -16,7 +16,7 @@ const Bookingcontroller = {
         passengers
       );
 
-      res.json(bookingdata);
+      res.status(200).json(bookingdata);
     } catch (error) {
       console.error("Error:", error);
       res.status(500).json({ error: "An error occurred while fetching data" });
@@ -27,6 +27,16 @@ const Bookingcontroller = {
     try {
       const allbookings = await BookingModel.getAllBookings();
       res.json(allbookings);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async getBookingDetails(req, res) {
+    const id = req.body;
+    console.log(id, "hello");
+    try {
+      const bookingDetails = await BookingModel.getBookingsDetails(req.body.id);
+      res.json(bookingDetails);
     } catch (error) {
       console.error(error);
     }

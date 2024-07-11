@@ -20,5 +20,15 @@ const eventController = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+  async getevent(req, res) {
+    try {
+      const params = req.body;
+      const data = await eventModel.getevent(params); // Adjusted method call
+      res.json(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
 };
 module.exports = eventController;

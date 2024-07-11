@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,55 +9,77 @@ datasource db {
 
 model User {
   id             Int             @id @default(autoincrement())
-  uid            String          @unique
-  username       String?
-  isUser         Boolean         @default(true)
   email          String          @unique
   address        String?
   age            Int?
   dob            DateTime?
-  orders         Order[]         @relation("UserToOrder")
-  carts          Cart[]
+  isUser         Boolean         @default(true)
+  uid            String          @unique
+  username       String?
   bookingResults BookingResult[]
+  carts          Cart?
+  orders         Order[]         @relation("UserToOrder")
 }
 
 model BookingDetail {
   id               Int           @id @default(autoincrement())
   status           String
-  createdAt        DateTime      @default(now())
-  bookingId        Int
+  bookingId        Int           @unique
   downloadRequired Boolean
   serviceUniqueId  String
-  serviceType      String
+  servicetype      String
+  prefix           String?
+  firstName        String?
+  lastName         String?
+  email            String?
+  mobile           String?
+  nationality      String?
+  message          String?
+  adult            Int?
+  child            Int?
+  infant           Int?
+  tourDate         String?
+  timeSlotId       Int?
+  startTime        String?
+  pickup           String?
+  adultRate        Float?
+  serviceTotal     Float?
+  tourOption       String?
+  tourname         String?
+  childRate        Float?
   confirmationNo   String?
-  bookingResult    BookingResult @relation(fields: [bookingResultId], references: [referenceNo])
-  bookingResultId  String
+  bookingResultId  Int
+  createdAt        DateTime      @default(now())
+  bookingResult    BookingResult @relation(fields: [bookingResultId], references: [id])
+
+  @@index([bookingResultId], map: "BookingDetail_bookingResultId_fkey")
 }
 
 model BookingResult {
-  referenceNo    String          @id
-  userId         String
-  user           User            @relation(fields: [userId], references: [uid])
+  id             Int             @id @default(autoincrement())
+  referenceNo    String          @unique
+  userId         String          @db.VarChar(255)
+  roleId         String?         @db.VarChar(255)
+  status         String          @default("Approved") @db.VarChar(255)
   bookingDetails BookingDetail[]
-  role           Roles?          @relation(fields: [roleId], references: [id])
-  roleId         Int?
+  role           Roles?          @relation(fields: [roleId], references: [uid])
+  user           User?           @relation(fields: [userId], references: [uid])
+
+  @@index([roleId], map: "BookingResult_roleId_fkey")
 }
 
-// Cart model
 model Cart {
   id          Int              @id @default(autoincrement())
   totalamount Float?
   uniqueNo    Int?
   userId      String           @unique
+  user        User             @relation(fields: [userId], references: [uid])
   TourDetails CartTourDetail[]
-  user        User             @relation(fields: [userId], references: [uid]) // Reference uid instead of id
 }
 
 model CartTourDetail {
   id              Int     @id @default(autoincrement())
   serviceUniqueId Int?
-  tourname        String
-  tourOption      String
   tourId          Int
   optionId        Int
   adult           Int
@@ -72,51 +91,51 @@ model CartTourDetail {
   transferId      Int
   pickup          String?
   adultRate       Float
-  childRate       Float
+  roleId          String? //added role id to map it with the bookings by vendors 
   serviceTotal    Float
+  cartId          Int
+  tourOption      String
+  tourname        String
+  childRate       Float
+  cart            Cart    @relation(fields: [cartId], references: [id])
 
-  // Relation to Cart
-  cart   Cart @relation(fields: [cartId], references: [id])
-  cartId Int
-}
-
-enum CartStatus {
-  ACTIVE
-  DISABLED
+  @@index([cartId], map: "CartTourDetail_cartId_fkey")
 }
 
 model Order {
   id       Int      @id @default(autoincrement())
-  username String
   age      Int
   adults   Int
   children Int
   tourId   Int
   amount   Float
-  status   String   @default("Approved")
   date     DateTime
+  status   String   @default("Approved")
+  username String
   user     User     @relation("UserToOrder", fields: [tourId], references: [id])
+
+  @@index([tourId], map: "Order_tourId_fkey")
 }
 
 model TimeSlot {
-  id                        Int        @id @unique
-  tourOptionId              Int
-  timeSlotId                String
-  timeSlot                  String
-  available                 Int
-  adultPrice                Float
-  childPrice                Float
-  isDynamicPrice            Boolean
-  companyBuyingPriceDynamic Float
-  tourOption                TourOption @relation(fields: [tourOptionId], references: [id])
+  id           Int        @id @unique @default(autoincrement())
+  tourOptionId Int
+  timeSlotId   String
+  timeSlot     String
+  available    Int
+  adultPrice   Float
+  childPrice   Float
+  tourOption   TourOption @relation(fields: [tourOptionId], references: [tourOptionId])
+
+  @@index([tourOptionId], map: "TimeSlot_tourOptionId_fkey")
 }
 
 model City {
   id       Int              @id @default(autoincrement())
-  CityId   Int              @unique
+  CityId   Int?             @unique
   CityName String
-  tours    Tourstaticdata[] // Define the one-to-many relationship
   event    Eventdata[]
+  tours    Tourstaticdata[]
 }
 
 model Tourtypes {
@@ -125,180 +144,117 @@ model Tourtypes {
 }
 
 model Tourstaticdata {
-  id                        Int                    @id @default(autoincrement())
-  tourId                    Int                    @unique
-  isvisible                 Boolean                @default(true)
-  isvisiblePopularTours     Boolean                @default(false)
-  isvisibleReccomendedTours Boolean                @default(false)
+  id                        Int                 @id @default(autoincrement())
+  tourId                    Int                 @unique
   countryId                 Int
   countryName               String
   cityId                    Int
   cityName                  String
-  tourName                  String
-  reviewCount               Int
-  rating                    Float
+  tourName                  String              @unique
   duration                  String
   imagePath                 String
-  imageCaptionName          String
   cityTourTypeId            String
   cityTourType              String
-  tourShortDescription      String                 @db.LongText
-  cancellationPolicyName    String                 @db.LongText
-  isSlot                    Boolean
-  onlyChild                 Boolean
   contractId                Int
   recommended               Boolean
   isPrivate                 Boolean
-  city                      City                   @relation(fields: [cityId], references: [CityId], onDelete: Cascade) // Define the relationship
-  tourdetails               Tourstaticdatabyid[]
-  tourOptions               TourOptionstaticdata[]
-  tourpricing               TourPricing[]
+  isvisible                 Boolean             @default(true)
+  isvisiblePopularTours     Boolean             @default(false)
+  isvisibleReccomendedTours Boolean             @default(false)
+  isSlot                    Boolean
+  isVendorTour              Boolean             @default(false)
+  vendorUid                 String?
+  vendor                    Roles?              @relation(fields: [vendorUid], references: [uid])
+  tourpricing               TourPricing?
+  city                      City                @relation(fields: [cityId], references: [CityId], onDelete: Cascade)
+  tourdetails               Tourstaticdatabyid?
+
+  coupons Coupon[] @relation("Coupon")
+
+  @@index([cityId], map: "Tourstaticdata_cityId_fkey")
 }
 
-// Define the Tour model
 model Tourstaticdatabyid {
-  id                                 Int            @id @default(autoincrement())
-  TourId                             Int            @unique
-  countryId                          Int
-  countryName                        String
-  cityId                             Int
-  cityName                           String
-  tourName                           String         @unique
-  reviewCount                        Int
-  rating                             Float
-  duration                           String
-  departurePoint                     String
-  reportingTime                      String
-  tourLanguage                       String
-  imagePath                          String
-  imageCaptionName                   String
-  cityTourTypeId                     String
-  cityTourType                       String
-  tourDescription                    String         @db.LongText
-  tourInclusion                      String         @db.LongText
-  tourShortDescription               String         @db.LongText
-  raynaToursAdvantage                String         @db.LongText
-  whatsInThisTour                    String         @db.LongText
-  importantInformation               String         @db.LongText
-  itenararyDescription               String         @db.LongText
-  usefulInformation                  String         @db.LongText
-  faqDetails                         String         @db.LongText
-  termsAndConditions                 String         @db.LongText
-  cancellationPolicyName             String         @db.LongText
-  cancellationPolicyDescription      String         @db.LongText
-  childCancellationPolicyName        String         @db.LongText
-  childCancellationPolicyDescription String         @db.LongText
-  childAge                           String
-  infantAge                          String
-  infantCount                        Int
-  isSlot                             Boolean
-  onlyChild                          Boolean
-  contractId                         Int
-  latitude                           String
-  longitude                          String
-  startTime                          String
-  meal                               String?
-  videoUrl                           String?
-  googleMapUrl                       String?
-  tourExclusion                      String?
-  howToRedeem                        String?
-  cutOffhrs                          Int?
-  tourstaticdata                     Tourstaticdata @relation(fields: [TourId], references: [tourId], onDelete: Cascade) // Define the relationship
-  tourImages                         TourImagess[] // Define relationship with TourImage
-  tourReviews                        TourReview[] // Define relationship with TourReview
+  id                   Int            @id @default(autoincrement())
+  countryId            Int
+  countryName          String
+  cityId               Int
+  cityName             String
+  tourName             String         @unique
+  duration             String
+  imagePath            String
+  cityTourTypeId       String
+  cityTourType         String
+  tourDescription      String         @db.LongText
+  tourInclusion        String         @db.LongText
+  tourShortDescription String         @db.LongText
+  importantInformation String         @db.LongText
+  itenararyDescription String         @db.LongText
+  usefulInformation    String         @db.LongText
+  childAge             String
+  infantAge            String
+  infantCount          Int
+  isSlot               Boolean
+  onlyChild            Boolean
+  contractId           Int
+  startTime            String
+  meal                 String?
+  googleMapUrl         String?
+  tourExclusion        String?
+  TourId               Int            @unique
+  cutOffhrs            Int?           @default(96)
+  vendorUid            String? // added this to map it to bookings and vendor 
+  isVendorTour         Boolean        @default(false)
+  tourOption           TourOption[]
+  tourImages           TourImagess[]
+  tourstaticdata       Tourstaticdata @relation(fields: [TourId], references: [tourId], onDelete: Cascade)
 }
 
-// Define the TourImage model
 model TourImagess {
-  id                  Int                @id @default(autoincrement())
-  tourId              Int
-  imagePath           String             @unique
-  imageCaptionName    String
-  isFrontImage        Int
-  isBannerImage       Int
-  isBannerRotateImage Int
-  tourstaticdatabyid  Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
-}
-
-// Define the Tourreview model
-
-model TourReview {
   id                 Int                @id @default(autoincrement())
   tourId             Int
-  reviewId           Int                @unique
-  reviewTitle        String
-  reviewContent      String             @db.LongText
-  visitMonth         String
-  rating             String
   imagePath          String
-  guestName          String
   tourstaticdatabyid Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
+
+  @@index([tourId], map: "TourImagess_tourId_fkey")
 }
 
 model TourPricing {
-  id             Int            @id @default(autoincrement())
-  tourId         Int            @unique
-  contractId     Int // ContractId used to identify if the tour is a supplier tour
-  amount         Float // Tour amount
-  discount       Float? // Discount for the tour
-  sortOrder      Int? // Sorting order (optional)
+  id             Int             @id @default(autoincrement())
+  tourId         Int             @unique
+  contractId     Int
+  amount         Float
+  discount       Float?
   addPriceadult  Float?
   addPricechild  Float?
-  addPriceinfant Float? // Additional price (optional)
-  tour           Tourstaticdata @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
+  addPriceinfant Float?
+  adultPrice     Float?
+  childPrice     Float?
+  infantPrice    Float?
+  tour           Tourstaticdata? @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
 }
 
-model TourOptionstaticdata {
-  id                            Int            @id @default(autoincrement())
+model TourOption {
+  id                            Int                @id @default(autoincrement())
   tourId                        Int
-  tourOptionId                  Int            @unique
   optionName                    String
   childAge                      String
   infantAge                     String
   optionDescription             String
-  cancellationPolicy            String
-  cancellationPolicyDescription String
-  childPolicyDescription        String
-  xmlcode                       String
-  xmloptioncode                 String
-  countryId                     Int
-  cityId                        Int
   minPax                        Int
   maxPax                        Int
   duration                      String
-  timeZone                      String
-  tour                          Tourstaticdata @relation(fields: [tourId], references: [tourId], onDelete: Cascade)
+  isWithoutTransfers            Boolean            @default(true)
+  isSharingTransfer             Boolean            @default(true)
+  isPrivateTransfer             Boolean            @default(true)
+  isPrivateBoatWithoutTransfers Boolean            @default(true)
+  isPvtYachtWithoutTransfers    Boolean            @default(true)
+  tourOptionId                  Int                @unique
+  tourStaticDataById            Tourstaticdatabyid @relation(fields: [tourId], references: [TourId], onDelete: Cascade)
+  operationDays                 OperationDay[]
+  timeSlots                     TimeSlot[]
 }
 
-model TourOption {
-  id                            Int            @id @default(autoincrement())
-  tourId                        Int
-  optionName                    String         @unique
-  childAge                      String
-  infantAge                     String
-  optionDescription             String
-  cancellationPolicy            String
-  cancellationPolicyDescription String
-  childPolicyDescription        String
-  xmlcode                       String
-  xmloptioncode                 String
-  countryId                     Int
-  cityId                        Int
-  minPax                        Int
-  maxPax                        Int
-  duration                      String
-  timeZone                      String
-  isWithoutAdult                Boolean
-  isTourGuide                   Int
-  compulsoryOptions             Boolean
-  isHideRateBreakup             Boolean
-  isHourly                      Boolean
-  timeSlots                     TimeSlot[] // Establish a one-to-many relationship with TimeSlot
-  operationDays                 OperationDay[] // Establish a one-to-many relationship with OperationDay
-  transferTimes                 TransferTime[] // Establish a one-to-many relationship with TransferTime
-}
-
-// Define the OperationDay model
 model OperationDay {
   id           Int        @id @default(autoincrement())
   tourId       Int
@@ -311,113 +267,20 @@ model OperationDay {
   saturday     Int
   sunday       Int
   tourOption   TourOption @relation(fields: [tourOptionId], references: [id], onDelete: Cascade)
+
+  @@index([tourOptionId], map: "OperationDay_tourOptionId_fkey")
 }
-
-// Define the TransferTime model
-
-model TransferTime {
-  id                            Int        @id @default(autoincrement())
-  tourId                        Int
-  tourOptionId                  Int
-  transferType                  String
-  transferTime                  String
-  duration                      String
-  mobileVoucher                 Boolean
-  printedVoucher                Boolean
-  instantConfirmation           Boolean
-  onRequest                     Boolean
-  requiedhrs                    Boolean
-  disableChild                  Boolean
-  disableInfant                 Boolean
-  twoWayTransfer                Boolean
-  portalTicket                  Boolean
-  allowTodaysBooking            Boolean
-  cancellationPolicy            String
-  cancellationPolicyDescription String
-  childPolicy                   String
-  childPolicyDescription        String
-  cutOffhrs                     Int
-  onRequestCutoff               Boolean
-  tourOption                    TourOption @relation(fields: [tourOptionId], references: [id], onDelete: Cascade)
-}
-
-// Define the Tourlist 
-
-model Tourlist {
-  id           Int    @id @default(autoincrement())
-  tourId       Int
-  contractId   Int
-  amount       Float
-  Priceaddon   Float
-  discount     Float
-  rewardPoints Int
-  sortOrder    Int
-  pointRemark  String
-}
-
-// Define the Transfer model
-
-model Ctouroption {
-  id                    Int     @id @default(autoincrement())
-  tourId                Int
-  tourOptionId          Int
-  transferId            Int
-  transferName          String
-  adultPrice            Float
-  childPrice            Float
-  infantPrice           Float
-  withoutDiscountAmount Float
-  finalAmount           Float
-  startTime             String
-  departureTime         String
-  disableChild          Boolean
-  disableInfant         Boolean
-  allowTodaysBooking    Boolean
-  cutOff                Int
-  isSlot                Boolean
-  isDefaultTransfer     Int
-  rateKey               String?
-  inventoryId           String?
-  adultBuyingPrice      Float
-  childBuyingPrice      Float
-  infantBuyingPrice     Float
-  adultSellingPrice     Float
-  childSellingPrice     Float
-  infantSellingPrice    Float
-  companyBuyingPrice    Float
-  companySellingPrice   Float
-  agentBuyingPrice      Float
-  agentSellingPrice     Float
-  subAgentBuyingPrice   Float
-  subAgentSellingPrice  Float
-  finalSellingPrice     Float
-  vatbuying             Float
-  vatselling            Float
-  currencyFactor        Float
-  agentPercentage       Float
-  transferBuyingPrice   Float
-  transferSellingPrice  Float
-  serviceBuyingPrice    Float
-  serviceSellingPrice   Float
-  rewardPoints          Int
-  tourChildAge          Int
-  maxChildAge           Int
-  maxInfantAge          Int
-  minimumPax            Int
-  pointRemark           String
-  adultRetailPrice      Float
-  childRetailPrice      Float
-}
-
-// for coupons
 
 model Coupon {
-  id       Int    @id @default(autoincrement())
+  id       Int             @id @default(autoincrement())
   name     String
-  discount Float // check if you want make it an integer 
+  discount Float
+  type     String
+  eventId  Int?
+  event    Eventdata?      @relation("Coupon", fields: [eventId], references: [id], onDelete: Cascade)
+  tourId   Int?
+  tour     Tourstaticdata? @relation("Coupon", fields: [tourId], references: [id])
 }
-
-//homepage
 
 model Homepage {
   id                    Int     @id @default(autoincrement())
@@ -428,78 +291,145 @@ model Homepage {
   heading2              String
   heading3              String
   imagepath             String?
-  imagepath2            String?
-  imagepath3            String?
   subtitle              String  @db.LongText
   title                 String
+  imagepath2            String?
+  imagepath3            String?
 }
 
 model BackgroundImage {
-  id       Int    @id @default(autoincrement())
-  filename String // Adjusted field name
-  url      String
+  id              Int     @id @default(autoincrement())
+  url             String
+  isVisibleSlider Boolean @default(false)
 }
 
 model Aboutus {
   id          Int    @id @default(autoincrement())
   title       String
-  subtitle    String
   imagepath   String
   imagepath2  String
   imagepath3  String
   heading1    String
-  text        String @db.LongText
   detail1     String
   heading2    String
   subheading2 String
   detail2     String
+  subtitle    String
+  text        String @db.LongText
 }
 
 model Eventdata {
-  eventId                Int     @id @default(autoincrement())
-  isvisible              Boolean @default(true)
-  isvisibleHome          Boolean @default(false)
-  cityId                 Int
-  eventName              String
-  reviewCount            Int
-  rating                 Float
-  duration               String
-  imagePath              String
-  imageCaptionName       String
-  cityeventTypeId        String
-  cityeventType          String
-  eventShortDescription  String  @db.LongText
-  cancellationPolicyName String  @db.LongText
-  isSlot                 Boolean
-  onlyChild              Boolean
-  recommended            Boolean
-  city                   City    @relation(fields: [cityId], references: [CityId]) // Define the relationship
+  id            Int           @id @default(autoincrement())
+  isVisible     Boolean       @default(true)
+  isVisibleHome Boolean       @default(false)
+  cityId        Int
+  eventName     String
+  duration      String
+  imagePath     String
+  eventType     String
+  isSlot        Boolean
+  onlyChild     Boolean
+  vendorUid     String?
+  vendor        Roles?        @relation(fields: [vendorUid], references: [uid])
+  recommended   Boolean
+  eventdetailid Int?          @unique
+  eventdetail   EventDetail[]
+  city          City?         @relation(fields: [cityId], references: [CityId], onDelete: Cascade)
+  coupons       Coupon[]      @relation("Coupon")
+
+  @@index([cityId], map: "Eventdata_cityId_fkey")
+}
+
+model EventDetail {
+  id              Int           @id @default(autoincrement())
+  eventName       String
+  eventdetailid   Int
+  description     String        @db.LongText
+  date            DateTime
+  location        String
+  googlemapurl    String
+  minage          String
+  moreinfo        String        @db.LongText
+  ticketinfo      String        @db.LongText
+  artistname      String
+  artistimage     String
+  lastbookingtime DateTime
+  eventSelling    Boolean
+  ischildallowed  Boolean
+  isadultallowed  Boolean
+  isinfantallowed Boolean
+  duration        String
+  vendorUid       String?
+  eventoptions    EventOption[]
+  images          EventImages[]
+  eventdata       Eventdata?    @relation(fields: [eventdetailid], references: [id], onDelete: Cascade)
+}
+
+model EventOption {
+  id                Int              @id @default(autoincrement())
+  eventId           Int
+  optionname        String
+  adultprice        String
+  childprice        String
+  infantprice       String
+  optiondescription String           @db.LongText
+  available         String
+  timeslots         EventTimeSlots[]
+  eventdetail       EventDetail?     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model EventTimeSlots {
+  id            Int         @id @unique @default(autoincrement())
+  eventOptionId Int
+  timeSlot      String
+  available     String
+  adultPrice    String
+  childPrice    String
+  eventoption   EventOption @relation(fields: [eventOptionId], references: [id], onDelete: Cascade)
+}
+
+model EventImages {
+  id            Int         @id @default(autoincrement())
+  imagePath     String
+  eventDetailId Int
+  eventdetail   EventDetail @relation(fields: [eventDetailId], references: [id], onDelete: Cascade)
+}
+
+model EventTypes {
+  id        Int    @id @default(autoincrement())
+  eventtype String @unique
 }
 
 model Roles {
-  id                    Int             @id @default(autoincrement())
-  uid                   String          @unique
+  id                    Int              @id @default(autoincrement())
+  uid                   String           @unique
   username              String
-  isAdmin               Boolean         @default(true)
-  isVendor              Boolean         @default(true)
-  email                 String          @unique
+  isAdmin               Boolean          @default(true)
+  isVendor              Boolean          @default(true)
+  email                 String           @unique
   address               String
   age                   Int
-  bookingResults        BookingResult[]
   name                  String
   license_number        String
+  isApproved            Boolean          @default(false)
   country               String
   city                  String
   services_description  String
   mobile                String
+  vatDocument           String?
+  bankDocument          String?
   document_tradelicense String
   document_other        String
-  created_at            DateTime        @default(now())
+  created_at            DateTime         @default(now())
+  tours                 Tourstaticdata[]
+  BookingResult         BookingResult[]
+  Eventdata             Eventdata[]
 }
 
 model RayanaApi {
-  id     Int    @id @default(autoincrement())
-  apikey String @db.LongText
+  id      Int    @id @default(autoincrement())
+  apikey  String @db.LongText
+  baseurl String
 }
 
 model StripeApi {
@@ -512,4 +442,52 @@ model Emailtemplate {
   id      Int    @id @default(autoincrement())
   subject String @db.LongText
   body    String @db.LongText
+}
+
+model ContactUs {
+  id           Int    @id @default(autoincrement())
+  Heading      String
+  Subheading   String
+  Subheading2  String
+  Address      String
+  mobilenumber String
+  Email        String
+  Heading2     String
+  Imagepath    String
+}
+
+model Footer {
+  id              Int    @id @default(autoincrement())
+  logourl         String
+  title1          String
+  paymentimage    String
+  copyright       String
+  socialimage1    String
+  socialimage2    String
+  socialimage3    String
+  socialimage4    String
+  socialimageurl1 String
+  socialimageurl2 String
+  socialimageurl3 String
+  socialimageurl4 String
+}
+
+model Experiences {
+  id        Int    @id @default(autoincrement())
+  heading   String
+  imagepath String
+}
+
+model FormSubmission {
+  id           Int    @id @default(autoincrement())
+  name         String
+  email        String
+  message      String
+  mobilenumber String
+}
+
+model TransferTypes {
+  id           Int    @unique @default(autoincrement())
+  transferName String
+  transferId   Int
 }

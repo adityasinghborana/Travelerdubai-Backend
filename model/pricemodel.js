@@ -54,7 +54,6 @@ const priceModel = {
                 contractId: price.contractId,
                 amount: price.amount,
                 discount: price.discount,
-                sortOrder: 0, // Sorting order (optional)
               };
 
               // Save each tour data entry into the 'Tourstaticdata' model using Prisma
@@ -64,7 +63,7 @@ const priceModel = {
 
                   data: tourpriceToSave,
                 });
-                console.log("Hurray price is added");
+                console.log("Hurray price is added from price model ");
                 console.log(tourpriceToSave);
               } catch (error) {
                 console.error(
