@@ -34,7 +34,7 @@ const aboutModel = {
     return { message: "Homepage updated successfully", updatedHomepage };
   },
   async getAllData() {
-    return await prisma.Aboutus.findMany();
+    return await prisma.Aboutus.findFirst();
   },
 };
 module.exports = aboutModel;

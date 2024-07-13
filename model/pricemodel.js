@@ -20,7 +20,8 @@ const priceModel = {
     const formattedDate = formatDate(currentDate); // Format the date
 
     //for tourpricing
-    const savedTourstaticdata2 = await prisma.city.findMany();
+    const savedTourstaticdata2 = await prisma.Tourstaticdata.findMany();
+
     for (const tourdata of savedTourstaticdata2) {
       try {
         const TourstaticData = {
@@ -28,6 +29,7 @@ const priceModel = {
           cityId: tourdata.cityId,
           travelDate: formattedDate,
         };
+
         // ... (unchanged code for processing tour data)
 
         const tourpriceresponse = await axios.post(
@@ -41,7 +43,9 @@ const priceModel = {
         );
 
         const tourprice = tourpriceresponse.data.result;
-ƒ
+
+        console.log(TourstaticData);
+
         try {
           if (Array.isArray(tourprice)) {
             for (const price of tourprice) {
@@ -50,8 +54,6 @@ const priceModel = {
                 contractId: price.contractId,
                 amount: price.amount,
                 discount: price.discount,
-                sortOrder: 0, // Sorting order (optional)
-                addPrice: 0,
               };
 
               // Save each tour data entry into the 'Tourstaticdata' model using Prisma
@@ -61,7 +63,7 @@ const priceModel = {
 
                   data: tourpriceToSave,
                 });
-                console.log("Hurray price is added");
+                console.log("Hurray price is added from price model ");
                 console.log(tourpriceToSave);
               } catch (error) {
                 console.error(
@@ -93,5 +95,4 @@ const priceModel = {
     console.error("hello ", error);
   },
 };
-
 module.exports = priceModel;

@@ -10,18 +10,7 @@ const userModel = {
     });
   },
 
-  async createUser({
-    email,
-    username,
-    uid,
-    isAdmin,
-    isUser,
-    isAgent,
-    address,
-    age,
-    dob,
-    profileImage,
-  }) {
+  async createUser({ email, username, uid, isUser, address, age, dob }) {
     const existingUser = await prisma.user.findFirst({
       where: {
         uid,
@@ -37,17 +26,13 @@ const userModel = {
         email,
         username,
         uid,
-        isAdmin,
         isUser,
-        isAgent,
         address,
         age,
         dob,
-        profileImage,
       },
     });
   },
-
   async deleteUser(email) {
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -69,10 +54,15 @@ const userModel = {
   },
 
   async checkUser(uid) {
-    return await prisma.user.findMany({
+    return await prisma.User.findMany({
       where: {
         uid,
       },
+      include: {
+     
+        orders:true,
+        carts:true,
+        },
     });
   },
 

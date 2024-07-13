@@ -1,0 +1,23 @@
+{
+    "Add City Controller": {
+        "prefix": "addController",
+        "body": [
+            "const model = require('../model/${1:createcity}');",
+            "",
+            "const ${2:addCityController} = {",
+            "    async ${3:addCity}(req, res) {",
+            "        const data = req.body.${4:objectvalue};",
+            "",
+            "        try {",
+            "           const data = await model.${5:modelfunctionname}(name);",
+            "            return res.json({ \"result\": data });",
+            "        } catch (error) {",
+            "           return res.json({ \"error\": error });",
+            "        }",
+            "    }",
+            "}",
+            "module.exports = ${2:addCityController};"
+        ],
+        "description": "Snippet for addController"
+    }
+}
