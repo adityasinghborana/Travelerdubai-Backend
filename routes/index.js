@@ -132,5 +132,6 @@ router.delete("/deleteimage", homepageController.deletebgimage);
 router.get("/coupons", couponsController.getCoupons);
 router.post("/createcoupons", couponsController.createCoupons);
 router.delete("/deletecoupon", couponsController.deleteCoupons);
+router.post("/checkcoupon", couponsController.checkCoupons);
 
 module.exports = router;

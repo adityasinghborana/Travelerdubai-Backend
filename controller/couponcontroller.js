@@ -32,5 +32,17 @@ const CopounController = {
       return res.json({ error: error });
     }
   },
+
+  async checkCoupons(req, res) {
+    try {
+      body = req.body;
+      console.log(body);
+      const data = await model.checkCoupon(body);
+      return res.json(data);
+    } catch (error) {
+      console.log(error);
+      return res.json({ error: error });
+    }
+  },
 };
 module.exports = CopounController;

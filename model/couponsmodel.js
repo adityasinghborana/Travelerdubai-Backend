@@ -36,5 +36,95 @@ const couponModel = {
     });
     return couponData;
   },
+  async checkCoupon(couponbody) {
+    try {
+      const couponData = await prisma.coupon.findUnique({
+        where: {
+          name: couponbody.name,
+        },
+      });
+
+      if (couponData != null && couponData.tourId == null) {
+        const cartData = await prisma.cart.findUnique({
+          where: {
+            id: couponbody.cartId,
+          },
+        });
+
+        if (!cartData) {
+          throw new Error("Cart not found");
+        }
+
+        console.log("Cart data:", cartData);
+
+        let newprice;
+        if (couponData.type === "flat") {
+          newprice = cartData.totalamount - couponData.discount;
+        } else {
+          newprice =
+            cartData.totalamount -
+            (cartData.totalamount / 100) * couponData.discount;
+        }
+
+        const updatedCart = {
+          error: null,
+          discountprice: newprice,
+        };
+
+        return updatedCart;
+      } else if (couponData != null && couponData.tourId != null) {
+        const cartTourDetails = await prisma.cartTourDetail.findMany({
+          where: {
+            cartId: couponbody.cartId,
+          },
+        });
+
+        const tourIds = cartTourDetails.map((item) => item.tourId);
+
+        if (tourIds.includes(couponData.tourId)) {
+          const cartData = await prisma.cart.findUnique({
+            where: {
+              id: couponbody.cartId,
+            },
+          });
+
+          if (!cartData) {
+            throw new Error("Cart not found");
+          }
+
+          console.log("Cart data:", cartData);
+
+          let newprice;
+          if (couponData.type === "flat") {
+            newprice = cartData.totalamount - couponData.discount;
+          } else {
+            newprice =
+              cartData.totalamount -
+              (cartData.totalamount / 100) * couponData.discount;
+          }
+
+          const updatedCart = {
+            error: null,
+            discountprice: newprice,
+          };
+
+          return updatedCart;
+        } else {
+          return {
+            error: "Coupon not applicable to any tour in the cart.",
+            discountprice: 0,
+          };
+        }
+      } else {
+        return { error: "Coupon not found.", discountprice: 0 };
+      }
+    } catch (error) {
+      console.error("Error checking coupon:", error);
+      return {
+        error: "An error occurred while checking the coupon",
+        details: error.message,
+      };
+    }
+  },
 };
 module.exports = couponModel;

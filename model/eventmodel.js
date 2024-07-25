@@ -21,7 +21,11 @@ const eventmodel = {
       },
 
       include: {
-        eventoptions: true,
+        eventoptions: {
+          include: {
+            timeslots: true,
+          },
+        },
         images: true,
       },
     });
