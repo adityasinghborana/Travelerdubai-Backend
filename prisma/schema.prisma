@@ -131,11 +131,12 @@ model TimeSlot {
 }
 
 model City {
-  id       Int              @id @default(autoincrement())
-  CityId   Int?             @unique
-  CityName String
-  event    Eventdata[]
-  tours    Tourstaticdata[]
+  id        Int              @id @default(autoincrement())
+  imagePath String?
+  CityId    Int?             @unique
+  CityName  String
+  event     Eventdata[]
+  tours     Tourstaticdata[]
 }
 
 model Tourtypes {
@@ -144,30 +145,33 @@ model Tourtypes {
 }
 
 model Tourstaticdata {
-  id                        Int                 @id @default(autoincrement())
-  tourId                    Int                 @unique
-  countryId                 Int
-  countryName               String
-  cityId                    Int
-  cityName                  String
-  tourName                  String              @unique
-  duration                  String
-  imagePath                 String
-  cityTourTypeId            String
-  cityTourType              String
-  contractId                Int
-  recommended               Boolean
-  isPrivate                 Boolean
-  isvisible                 Boolean             @default(true)
-  isvisiblePopularTours     Boolean             @default(false)
-  isvisibleReccomendedTours Boolean             @default(false)
-  isSlot                    Boolean
-  isVendorTour              Boolean             @default(false)
-  vendorUid                 String?
-  vendor                    Roles?              @relation(fields: [vendorUid], references: [uid])
-  tourpricing               TourPricing?
-  city                      City                @relation(fields: [cityId], references: [CityId], onDelete: Cascade)
-  tourdetails               Tourstaticdatabyid?
+  id                              Int                 @id @default(autoincrement())
+  tourId                          Int                 @unique
+  countryId                       Int
+  countryName                     String
+  cityId                          Int
+  cityName                        String
+  tourName                        String              @unique
+  duration                        String
+  imagePath                       String
+  cityTourTypeId                  String
+  cityTourType                    String
+  contractId                      Int
+  recommended                     Boolean
+  isPrivate                       Boolean
+  isvisible                       Boolean             @default(true)
+  isvisibleReccomendedTours       Boolean             @default(false)
+  isvisibleDesertsafari           Boolean             @default(true)
+  isvisibleCulturesandattractions Boolean             @default(true)
+  isvisibleDhowcruise             Boolean             @default(true)
+  isvisibleWateractivities        Boolean             @default(true)
+  isSlot                          Boolean
+  isVendorTour                    Boolean             @default(false)
+  vendorUid                       String?
+  vendor                          Roles?              @relation(fields: [vendorUid], references: [uid])
+  tourpricing                     TourPricing?
+  city                            City                @relation(fields: [cityId], references: [CityId], onDelete: Cascade)
+  tourdetails                     Tourstaticdatabyid?
 
   coupons Coupon[] @relation("Coupon")
 
@@ -273,13 +277,13 @@ model OperationDay {
 
 model Coupon {
   id       Int             @id @default(autoincrement())
-  name     String
+  name     String          @unique
   discount Float
   type     String
   eventId  Int?
   event    Eventdata?      @relation("Coupon", fields: [eventId], references: [id], onDelete: Cascade)
   tourId   Int?
-  tour     Tourstaticdata? @relation("Coupon", fields: [tourId], references: [id])
+  tour     Tourstaticdata? @relation("Coupon", fields: [tourId], references: [tourId])
 }
 
 model Homepage {
@@ -290,6 +294,9 @@ model Homepage {
   heading1              String
   heading2              String
   heading3              String
+  heading4              String
+  heading5              String
+  heading6              String
   imagepath             String?
   subtitle              String  @db.LongText
   title                 String
