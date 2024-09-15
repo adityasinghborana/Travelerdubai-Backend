@@ -98,6 +98,7 @@ router.post("/bookingdetail", Bookingcontroller.getBookingDetails);
 router.get("/allvendors", rolecontroller.fetchAllVendor);
 router.post("/vendor", rolecontroller.fetchVendor);
 router.post("/signupvendor", rolecontroller.signupVendor);
+router.patch("/updatevendor", rolecontroller.updateVendor);
 
 // create tourtypes
 router.post("/addtourtypes", tourtypescontroller.tourtype);

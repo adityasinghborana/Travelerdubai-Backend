@@ -16,10 +16,28 @@ const RolesModel = {
   async FetchAllVendors() {
     return await prisma.Roles.findMany();
   },
+  async updateVendorInDB(vendordata) {
+    try {
+      const data = await prisma.roles.update({
+        where: {
+          uid: vendordata.uid,
+        },
+        data: {
+          isApproved: vendordata.status,
+        },
+      });
+
+      // Return the updated data if successful
+      return { success: true, data };
+    } catch (error) {
+      // Return the error if something goes wrong
+      return { success: false, error: error.message };
+    }
+  },
 
   async vendorSignup(vendordata) {
     try {
-      await prisma.roles.create({
+      const vendor = await prisma.roles.create({
         data: {
           uid: vendordata.uid,
           username: vendordata.username,
@@ -42,9 +60,13 @@ const RolesModel = {
           created_at: new Date(), // You can omit this if you want to use the default value
         },
       });
-      console.log("Vendor signed up successfully");
+      return { success: true, vendor };
     } catch (error) {
-      console.error("Error signing up vendor:", error);
+      return {
+        success: false,
+        message: "Error signing up vendor",
+        error: error.message,
+      };
     }
   },
 };
