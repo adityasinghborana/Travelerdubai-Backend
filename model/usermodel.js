@@ -59,14 +59,13 @@ const userModel = {
         uid,
       },
       include: {
-     
-        orders:true,
-        carts:true,
-        },
+        orders: true,
+        carts: true,
+      },
     });
   },
 
-  async updateUser({ email, username }) {
+  async updateUser({ email, username, address, mobileNo, age, dob }) {
     const existingUser = await prisma.user.findFirst({
       where: {
         email,
@@ -83,7 +82,10 @@ const userModel = {
       },
       data: {
         username,
-        email,
+        mobileNo,
+        address,
+        age,
+        dob: new Date(dob),
       },
     });
   },
