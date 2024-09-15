@@ -12,6 +12,7 @@ model User {
   email          String          @unique
   address        String?
   age            Int?
+  mobileNo       String?
   dob            DateTime?
   isUser         Boolean         @default(true)
   uid            String          @unique
