@@ -154,7 +154,9 @@ const cityModel = {
                   cityName: staticdata.cityName,
                   tourName: staticdata.tourName,
                   duration: staticdata.duration,
-                  imagePath: staticdata.imagePath,
+                  imagePath:
+                    "https://d1i3enf1i5tb1f.cloudfront.net/" +
+                    staticdata.imagePath,
                   cityTourTypeId: staticdata.cityTourTypeId,
                   cityTourType: staticdata.cityTourType,
                   tourDescription: staticdata.tourDescription,

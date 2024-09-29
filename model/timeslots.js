@@ -48,6 +48,26 @@ const TimeSlot = {
       return { message: "its not a valid api" };
     }
   },
+
+  async updateAvailability(requestbody) {
+    console.log(requestbody);
+    try {
+      const data = await prisma.TimeSlot.update({
+        where: {
+          id: requestbody.id,
+        },
+        data: {
+          available: requestbody.available,
+        },
+      });
+      return {
+        message: "availablity updated succesfully",
+        result: data,
+      };
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 module.exports = TimeSlot;

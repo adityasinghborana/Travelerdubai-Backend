@@ -20,6 +20,25 @@ const TimeSlotcontroller = {
       res.status(500).json({ error: "An error occurred while fetching data" });
     }
   },
+  async updateAvailability(req, res) {
+    try {
+      requestdata = req.body;
+
+      // Call the service function to update availability
+      const data = await TimeSlot.updateAvailability(requestdata);
+
+      console.log(data);
+      res.status(201).json({
+        result: data,
+      });
+    } catch (error) {
+      // Handle any errors that occur
+      res.status(500).json({
+        message: "Error updating availability",
+        error: error.message,
+      });
+    }
+  },
 };
 
 module.exports = TimeSlotcontroller;

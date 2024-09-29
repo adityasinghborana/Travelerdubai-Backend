@@ -135,4 +135,7 @@ router.post("/createcoupons", couponsController.createCoupons);
 router.delete("/deletecoupon", couponsController.deleteCoupons);
 router.post("/checkcoupon", couponsController.checkCoupons);
 
+// avalibility
+router.patch("/updateavailability", TimeSlotcontroller.updateAvailability);
+
 module.exports = router;

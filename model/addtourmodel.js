@@ -68,7 +68,7 @@ const AddTourUser = {
           cityName: params.cityname,
           tourName: params.tourname,
           duration: params.duration,
-          imagePath: params.imagepath,
+          imagePath: "http://localhost:3000/" + params.imagepath,
           cityTourTypeId: params.citytourtypeid,
           cityTourType: params.citytourtype,
           contractId: 300,
@@ -105,7 +105,7 @@ const AddTourUser = {
           cityName: params.cityname,
           tourName: params.tourname,
           duration: params.duration,
-          imagePath: params.imagepath,
+          imagePath: "http://localhost:3000/" + params.imagepath,
           cityTourTypeId: params.citytourtypeid,
           cityTourType: params.citytourtype,
           contractId: params.contractid,
@@ -189,7 +189,7 @@ const AddTourUser = {
                   await prismaClient.TourImagess.createMany({
                     data: {
                       tourId: gtourId,
-                      imagePath: ImagePath,
+                      imagePath: "http://localhost:3000/" + ImagePath,
                     },
                   });
 
